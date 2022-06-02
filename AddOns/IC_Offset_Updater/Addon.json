@@ -1,0 +1,9 @@
+{
+	"Name":"Offset Updater",
+	"Version": "v0.0.1",
+    "Includes" : "IC_OffsetUpdater_Component.ahk",
+    "Author" : "mikebaldi1980",
+    "Url" : "",
+    "Info" : "",
+    "Dependencies" : {}
+}

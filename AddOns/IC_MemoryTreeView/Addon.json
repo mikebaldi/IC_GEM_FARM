@@ -1,0 +1,9 @@
+{
+	"Name":"Memory Tree View",
+	"Version": "v0.0.1",
+    "Includes" : "IC_MemoryTreeView_Component.ahk",
+    "Author" : "mikebaldi1980",
+    "Url" : "",
+    "Info" : "",
+    "Dependencies" : {}
+}

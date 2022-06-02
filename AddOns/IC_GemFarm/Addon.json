@@ -1,0 +1,10 @@
+{
+	"Name":"Gem Farm",
+	"Version": "v0.0.1",
+    "Includes" : "IC_GemFarm_Component.ahk",
+    "Author" : "Antilectual & mikebaldi1980",
+    "Url" : "",
+    "Info" : "A script to automate gem farming. Requires Modron Automation and Briv.",
+    "Dependencies" : {
+    }
+}
