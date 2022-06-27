@@ -68,11 +68,12 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.Defs.AreaDef
             backgroundDef := new CrusadersGame.Defs.BackgroundDef(72, 0, this)
+            BackgroundDefID := new System.Int32(108, 0, this)
             isFixed := new System.Boolean(156, 0, this) ;OR-TYPE
             ;FE
 
             ;to revisit when i want to figure out nullable type
-            ;isFixed_hasValue_1byte := new System.Boolean(157, 0, this)
+            isFixed_hasValue := new System.Boolean(157, 0, this)
             ;isFixed_hasValue_2byte := new System.Boolean(158, 0, this)
             ;isFixed_hasValue_3byte := new System.Boolean(159, 0, this)
         }

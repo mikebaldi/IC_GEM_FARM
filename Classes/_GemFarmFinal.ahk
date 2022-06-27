@@ -9,6 +9,7 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_LineFile%\..\_ClientHandler.ahk
 #Include %A_LineFile%\..\_IC_FuncLibrary.ahk
 #Include %A_LineFile%\..\_ServerCalls.ahk
+#Include %A_LineFile%\..\_QTHandler.ahk
 
 class _GemFarmFinal
 {
@@ -125,17 +126,17 @@ class _GemFarmFinal
         g_Log.CreateEvent("Gem Farm-Partial")
         this.Reloaded := false
 
+        this.QTHandler := new _QTHandler
+
         loop
         {
             if !(this.Client.SafetyCheck())
             {
                 this.Client.OpenIC(this.Settings.InstallPath)
                 this.Client.LoadAdventure(this.Briv)
+                this.QTHandler.InitDefs()
                 this.CurrentZonePrevTime := A_TickCount
             }
-
-            ;if (this.Settings.SetTimeScale AND this.IdlegameManager.TimeScale.GetValue() != this.Settings.SetTimeScale)
-            ;    this.IdleGameManager.TimeScale.SetValue(this.settings.SetTimeScale)
             
             if (this.Settings.SetTimeScale)
                 this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
@@ -167,6 +168,7 @@ class _GemFarmFinal
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
             this.Sentry.SetOneKill()
+            this.QTHandler.SetBackGroundID()
             _VirtualKeyInputs.Priority("{Right}", "{q}")
 
             ; to add: qt handler
@@ -185,6 +187,7 @@ class _GemFarmFinal
         this.Funcs.ToggleAutoProgress(0)
         this.Briv.LevelUp(170,, "q")
         this.Sentry.LevelUp(225,, "q")
+        this.QTHandler.InitDefs()
         this.Funcs.FinishZone(30000, this.Formation, "q")
         this.Funcs.ToggleAutoProgress(1)
         startTime := A_TickCount
@@ -234,6 +237,7 @@ class _GemFarmFinal
                 sleep, 100
             }
         }
+        this.QTHandler.InitDefs()
         this.CurrentZonePrevTime := A_TickCount
         this.Funcs.ToggleAutoProgress(1)
         g_Log.EndEvent()

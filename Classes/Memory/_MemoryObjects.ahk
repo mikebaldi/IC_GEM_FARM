@@ -67,6 +67,7 @@ class System
         }
     }
 
+    /*
     class Collection extends System.Object
     {
         NewChild(parent, type, offset)
@@ -80,9 +81,39 @@ class System
             return obj
         }
     }
+    */
+
+    class _Collection
+    {
+        __new(parent, type)
+        {
+            this.Parent := parent
+            this.Type := type
+            this.CachedObjects := {}
+            return this
+        }
+
+        GetObject(index, offset)
+        {
+            if !(this.CachedObjects.HasKey(index))
+                this.CachedObjects[index] := this.NewObject(offset)
+            return this.CachedObjects[index]
+        }
+
+        NewObject(offset)
+        {
+            if (this.Type[1].__Class == "System.List")
+                obj := new System.List(offset, offset, this.Parent, this.Type[2])
+            else if (this.Type[1].__Class == "System.DIctionary")
+                obj := new System.Dictionary(offset, offset, this.Parent, this.Type[2], this.Type[3])
+            else
+                obj := new this.Type(offset, offset, this.Parent)
+            return obj
+        }
+    }
 
     ;item base is the memory class, and item type is the c# type
-    class List extends System.Collection
+    class List extends System.Object
     {
         __new(offset32, offset64, parentObject, itemType)
         {
@@ -97,6 +128,7 @@ class System
             this.ItemType := itemType
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
+            this.Items := new System._Collection(this._items, this.ItemType)
             return this 
         }
         
@@ -114,12 +146,13 @@ class System
         {
             get
             {
-                return this.NewChild(this._items, this.ItemType, this.GetItemOffset(index))
+                ;return this.NewChild(this._items, this.ItemType, this.GetItemOffset(index))
+                return this.Items.GetObject(index, this.GetItemOffset(index))
             }
         }
     }
 
-    class Dictionary extends System.Collection
+    class Dictionary extends System.Object
     {
         __new(offset32, offset64, parentObject, keyType, valueType)
         {
@@ -136,6 +169,8 @@ class System
             this.ValueType := valueType
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
+            this.Keys := new System._Collection(this.entries, this.KeyType)
+            this.Values := new System._Collection(this.entries, this.ValueType)
             return this
         }
 
@@ -143,7 +178,8 @@ class System
         {
             get
             {
-                return this.NewChild(this.entries, this.KeyType, this.GetKeyOffset(index))
+                ;return this.NewChild(this.entries, this.KeyType, this.GetKeyOffset(index))
+                return this.Keys.GetObject(index, this.GetKeyOffset(index))
             }
         }
 
@@ -151,7 +187,8 @@ class System
         {
             get
             {
-                return this.NewChild(this.entries, this.ValueType, this.GetValueOffset(index))
+                ;return this.NewChild(this.entries, this.ValueType, this.GetValueOffset(index))
+                return this.Values.GetObject(index, this.GetValueOffset(index))
             }
         }
 

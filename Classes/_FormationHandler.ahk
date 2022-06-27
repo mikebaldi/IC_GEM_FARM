@@ -6,6 +6,8 @@ class _FormationHandler
         return this
     }
 
+    ;consider setting formation by a_index to have key for formation slot from formation param, need to review formation param format.
+    ;consider using a dictionary of formations. one use potentially be to confirm if formation is loaded in adventure.
     SetFormation(formation)
     {
         this.Formation := {}

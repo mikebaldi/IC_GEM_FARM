@@ -1,5 +1,5 @@
 #SingleInstance, force
-#include %A_ScriptDir%\SharedFunctions\classExceptionHandler.ahk
+#include %A_ScriptDir%\Classes\_ExceptionHandler.ahk
 #Include %A_ScriptDir%\Classes\Memory\_MemoryHandler.ahk
 ;to do - fix exception when child doesn't populate, collapse then expand again should do it.
 ;to do - auto read in structures
@@ -76,7 +76,7 @@ class TV_MemoryView
         if !this.TVdata.HasKey(parentItemID)
         {
             ;may need to add TV_GetText(Outputvar, parentItemID) to this exception text to better understand
-            ExceptionHandler.ThrowError("TVdata missing key: " . parentItemID, -1)
+            ;ExceptionHandler.ThrowError("TVdata missing key: " . parentItemID, -1)
             ;collapse item recently expanded, collapse its parent, expand its parent, rerun parentexpanded to build new parent
             TV_Modify(parentItemID, "-Expand")
             superParentID := TV_GetParent(parentItemID)
@@ -348,9 +348,9 @@ class TV_MemoryView
 
     UpdateItem(itemID)
     {
-        if !this.TVdata.HasKey(itemID)
+        ;if !this.TVdata.HasKey(itemID)
             ;may need to add TV_GetText(Outputvar, parentItemID) to this exception text to better understand
-            ExceptionHandler.ThrowError("TVdata missing key: " . itemID, -1)
+            ;ExceptionHandler.ThrowError("TVdata missing key: " . itemID, -1)
         this.TVdata[itemID].Refresh()
     }
 

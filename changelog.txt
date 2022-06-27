@@ -1,3 +1,9 @@
+v0.1.0, June 27, 2022
+
+    Modified Memory Object collection types to cache collections for faster look up.
+    Created quick transition handler class, _QTHandler, to force all transitiosn to QTs.
+    Disabled msg box pop up on error for Tree View.
+
 v0.0.0, June 26, 2022
 
     Script is barebones functional now.
