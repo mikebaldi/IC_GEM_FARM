@@ -1,4 +1,5 @@
 #Include %A_LineFile%\..\Memory\_MemoryHandler.ahk
+#Include %A_LineFile%\..\Memory\_MemoryLogHandler.ahk
 #Include %A_LineFile%\..\_VirtualKeyInputs.ahk
 _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_LineFile%\..\_FormationHandler.ahk
@@ -10,6 +11,7 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_LineFile%\..\_IC_FuncLibrary.ahk
 #Include %A_LineFile%\..\_ServerCalls.ahk
 #Include %A_LineFile%\..\_QTHandler.ahk
+#Include %A_LineFile%\..\_Contained.ahk
 
 class _GemFarmFinal
 {
@@ -24,11 +26,12 @@ class _GemFarmFinal
         this.Settings := settings
         this.Client := new _ClientHandler
         this.Briv := new _BrivHandler(58)
-        this.Funcs := new _IC_FuncLibrary
+        this.Funcs := _IC_FuncLibrary.CreateOrGetInstance()
         this.RunCount := 0
         return this
     }
 
+    ;may be obsolete with is on world map method
     CurrentZone[]
     {
         get
@@ -66,6 +69,14 @@ class _GemFarmFinal
 
         this.CurrentObjective := this.ActiveCampaignData.CurrentObjective.Value
         g_Log.AddDataSimple("CurrentObjective: " . this.CurrentObjective)
+
+        this.ModronTargetArea := this.Funcs.GetModronTargetArea()
+        g_Log.AddDataSimple("ModronTargetArea: " . this.ModronTargetArea)
+
+        this.ClickLevel := this.ModronTargetArea + 20
+        if (!(this.ClickLevel) OR this.ClickLevel == -1)
+            this.ClickLevel := 2000
+        g_Log.AddDataSimple("ClickLevel: " . this.ClickLevel)
 
         ;read in formations
         formationSaves := new _FormationSavesHandler
@@ -108,6 +119,8 @@ class _GemFarmFinal
             } 
             else if (this.Formation.Formation[i].ChampID == 91)
                 this.Formation.Formation[i].MaxLvl := 310
+            else if (this.Formation.Formation[i].ChampID == 102)
+                this.Formation.Formation[i].MaxLvl := 250
             ;build a temp object to log the formation handler formation
             tempObj[i] := {}
             for k, v in this.Formation.Formation[i]
@@ -118,15 +131,23 @@ class _GemFarmFinal
             ++i
         }
         g_Log.AddData("Formation Data", tempObj)
-        tempObj := ""
         g_Log.AddData("Settings", this.Settings)
+        this.QTHandler := new _QTHandler
+        tempObj := {}
+        loop, 50
+        {
+            tempObj[A_Index] := {}
+            tempObj[A_Index].setBackground := this.QTHandler.List[A_Index].setBackground
+            tempObj[A_Index].defaultID := this.QTHandler.List[A_Index].defaultID
+        }
+        g_Log.AddData("QTHandler.List", tempObj)
+        tempObj := ""
         ;adds start up to log file
         g_Log.LogStack()
         ;start new log event
         g_Log.CreateEvent("Gem Farm-Partial")
         this.Reloaded := false
 
-        this.QTHandler := new _QTHandler
 
         loop
         {
@@ -134,15 +155,15 @@ class _GemFarmFinal
             {
                 this.Client.OpenIC(this.Settings.InstallPath)
                 this.Client.LoadAdventure(this.Briv)
-                this.QTHandler.InitDefs()
+                this.Client.MemoryLog.ResetPrevValues()
+                this.QTHandler.SetAreas()
                 this.CurrentZonePrevTime := A_TickCount
             }
             
             if (this.Settings.SetTimeScale)
                 this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
 
-            ;to update this to be based on modron reset value
-            this.Funcs.SetClickLevel(2000)
+            this.Funcs.SetClickLevel(this.ClickLevel)
 
             if (this.CurrentZone > this.Settings.StackZone AND this.Briv.Stacks < this.Settings.TargetStacks)
                 this.RestartStack()
@@ -163,16 +184,14 @@ class _GemFarmFinal
                 this.DoZoneOne()
                 this.CurrentZonePrev := 1
             }
-            ;this.CheckIfStuck()
+            if (this.Funcs.IsOnWorldMap())
+                g_Log.AddData("IsOnWorldMap", "true")
             this.Funcs.ToggleAutoProgress(1)
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
             this.Sentry.SetOneKill()
-            this.QTHandler.SetBackGroundID()
+            this.QTHandler.SetBackgrounds()
             _VirtualKeyInputs.Priority("{Right}", "{q}")
-
-            ; to add: qt handler
-
             ;let the script catch up
             sleep, 10
         }
@@ -183,11 +202,12 @@ class _GemFarmFinal
         g_Log.LogStack()
         this.RunCount += 1
         g_Log.CreateEvent("Gem Run " . this.RunCount)
+        g_Log.CreateEvent(A_ThisFunc)
         this.Funcs.WaitForFirstGold()
         this.Funcs.ToggleAutoProgress(0)
         this.Briv.LevelUp(170,, "q")
         this.Sentry.LevelUp(225,, "q")
-        this.QTHandler.InitDefs()
+        this.QTHandler.SetAreas()
         this.Funcs.FinishZone(30000, this.Formation, "q")
         this.Funcs.ToggleAutoProgress(1)
         startTime := A_TickCount
@@ -198,6 +218,7 @@ class _GemFarmFinal
             sleep, 100
             elapsedTime := A_TickCount - startTime
         }
+        g_Log.EndEvent()
     }
 
     RestartStack()
@@ -212,6 +233,7 @@ class _GemFarmFinal
         this.Client.OpenIC(this.Settings.InstallPath)
         ;load adventure should be a ic func class method
         this.Client.LoadAdventure(this.Briv)
+        this.Client.MemoryLog.ResetPrevValues()
         ;correct a roll back
         if (currentZone > this.ActiveCampaignData.HighestZone.Value)
         {
@@ -237,50 +259,10 @@ class _GemFarmFinal
                 sleep, 100
             }
         }
-        this.QTHandler.InitDefs()
+        this.QTHandler.SetAreas()
         this.CurrentZonePrevTime := A_TickCount
         this.Funcs.ToggleAutoProgress(1)
         g_Log.EndEvent()
-    }
-
-    ;writing 3 (static/qt) to transition direction doesn't work.
-    ForceQT()
-    {
-        g_Log.CreateEvent(A_ThisFunc)
-        areas := this.ActiveCampaignData.adventureDef.areas
-        areas.SetAddress(true)
-        _size := areas.Size()
-        ;to do create a list of objects one time at init, isntead of everytime this is called
-        ;initial list creation should also pull a background def id, maybe most common?
-        i := 0
-        loop %_size%
-        {
-            area := areas.Item[i]
-            area.backgroundDef.ID.SetValue(9)
-            area.backgroundDef.IsFixed.SetValue(1)
-            area.isFixed.SetValue(1)
-            ++i
-        }
-        areas := ""
-        g_Log.EndEvent()
-        return
-    }
-
-    ;need to add better code in case a modron reset happens without being detected. might mean updating other functions.
-    CheckifStuck()
-    {
-        if ((A_TickCount - this.CurrentZonePrevTime) > 60000)
-        {
-            g_Log.CreateEvent(A_ThisFunc)
-            this.Client.CloseIC(A_ThisFunc)
-            sleep, 1000
-            this.Client.CloseIC( reason )
-            sleep, 250
-            this.Client.OpenIC(this.Settings.InstallPath)
-            this.Client.LoadAdventure(this.Briv)
-            this.CurrentZonePrevTime := A_TickCount
-            g_Log.EndEvent()
-        }
     }
 
     ModronReset()
@@ -290,6 +272,8 @@ class _GemFarmFinal
         elapsedTime := 0
         while (this.ResetHandler.Resetting.Value == 1 AND elapsedTime < 60000)
         {
+            this.Client.MemoryLog.state.Value
+            this.Client.MemoryLog.InstanceMode.Value
             sleep, 250
             elapsedTime := A_TickCount - startTime
         }
@@ -301,6 +285,7 @@ class _GemFarmFinal
             sleep, 250
             this.Client.OpenIC()
             this.Client.LoadAdventure()
+            this.Client.MemoryLog.ResetPrevValues()
         }
         this.CurrentZonePrevTime := A_TickCount
         g_Log.EndEvent()

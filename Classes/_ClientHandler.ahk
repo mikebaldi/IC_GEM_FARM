@@ -2,12 +2,27 @@ class _ClientHandler
 {
     __new()
     {
-        this.GameManager := _MemoryHandler.InitGameManager()
+        this.GameManager := _MemoryHandler.InitIdleGameManager()
         this.GameInstance := _MemoryHandler.InitGameInstance()
-        this.loader := _MemoryHandler.InitLoadingScreen()
+        this.Loader := _MemoryHandler.InitLoadingScreen()
+        this.MemoryLog := _MemoryLogHandler.CreateOrGetInstance()
+        this.InitMemoryLog()
         this.PID := 0
         this.HWD := 0
+        this.Funcs := new _IC_FuncLibrary ;.CreateOrGetInstance()
         return this
+    }
+
+    InitMemoryLog()
+    {
+        this.MemoryLog.Add(this.GameManager.game.gameStarted, "gameStarted")
+        this.MemoryLog.Add(this.GameManager.game.gameUser.Loaded, "userLoaded")
+        this.MemoryLog.Add(this.GameManager.game.loadingScreen.loadingDefinitions, "loadingDefinitions")
+        this.MemoryLog.Add(this.GameManager.game.loadingScreen.loadingProgress, "loadingProgress")
+        this.MemoryLog.Add(this.GameManager.game.loadingScreen.loadingText.lastSetText, "lastSetText")
+        this.MemoryLog.Add(this.GameManager.game.loadingScreen.socialUserAuthenticationDone, "socialUserAuthenticationDone")
+        this.MemoryLog.Add(this.GameInstance.state, "state")
+        this.MemoryLog.Add(this.GameInstance.InstanceMode, "InstanceMode")
     }
 
     ;same as winexist, but only if hasn't done so in last 5000 ms
@@ -57,7 +72,9 @@ class _ClientHandler
         startTime := A_TickCount
         elapsedTime := 0
         i := 0
-        while (!(this.loader.gameStarted.Value) AND elapsedTime < 60000)
+        ;while (!(this.GameManager.game.gameStarted.Value) AND elapsedTime < 60000)
+        ;while (!(this.Loader.gameStarted.Value) AND elapsedTime < 60000)
+        while (!(this.MemoryLog.gameStarted.Value) AND elapsedTime < 60000)
         {
             if !(this.SafetyCheck())
             {
@@ -66,12 +83,17 @@ class _ClientHandler
                 g_Log.EndEvent()
                 return
             }
-            this.loader.userLoaded.Value
-            this.loader.loadingDefinitions.Value
-            this.loader.loadingGameUser.Value
-            this.loader.loadingProgress.Value
-            this.loader.loadingText.Value
-            this.loader.socialUserAuthenticationDone.Value
+
+            this.MemoryLog.userLoaded.Value
+            this.MemoryLog.loadingDefinitions.Value
+            this.MemoryLog.loadingGameUser.Value
+            this.MemoryLog.loadingProgress.Value
+            this.MemoryLog.loadingText.Value
+            this.MemoryLog.socialUserAuthenticationDone.Value
+            this.MemoryLog.state.Value
+            this.MemoryLog.InstanceMode.Value
+            if (this.Funcs.IsOnWorldMap())
+                g_Log.AddData("IsOnWorldMap", "true")
             sleep, 100
             elapsedTime := A_TickCount - startTime
             ++i
@@ -163,7 +185,11 @@ class _ClientHandler
                 g_Log.EndEvent()
                 return
             }
+            this.MemoryLog.state.Value
+            this.MemoryLog.InstanceMode.Value
             _VirtualKeyInputs.Priority("e", hero.Fkey)
+            if (this.Funcs.IsOnWorldMap())
+                g_Log.AddData("IsOnWorldMap", "true")
             sleep, 100
             elapsedTime := A_TickCount - startTime
         }
@@ -187,7 +213,11 @@ class _ClientHandler
                 g_Log.EndEvent()
                 return
             }
+            this.MemoryLog.state.Value
+            this.MemoryLog.InstanceMode.Value
             _VirtualKeyInputs.Priority("w", hero.Fkey)
+            if (this.Funcs.IsOnWorldMap())
+                g_Log.AddData("IsOnWorldMap", "true")
             sleep, 100
             elapsedTime := A_TickCount - startTime
         }

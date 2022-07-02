@@ -1,3 +1,14 @@
+v0.2.0, July 2, 2022
+
+    Added method to detect when stuck on world map.
+    Corrected an instnace of memory reads being stuck using cached address.
+    Click damage fail safe is now based on modron reset level.
+    Created a memory log handler class.
+    Created a base class _Contained to minimize amount of globals and allow useof same class instances across a script.
+    Added additional data collection to adventure and client loading and modron reset methods.
+    Added additional memory reads for instance state and mode.
+    Modification to _QTHandler to reduce memory writes.
+
 v0.1.0, June 27, 2022
 
     Modified Memory Object collection types to cache collections for faster look up.

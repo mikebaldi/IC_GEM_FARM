@@ -42,9 +42,23 @@ class CrusadersGame
         FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(48, 96, this)
         offlineProgressHandler := new OfflineProgressHandler(64, 128, this)
         ResetsSinceLastManual := new System.Int32(136, 268, this)
+        InstanceMode := new CrusadersGame.ChampionsGameInstance.GameInstanceMode(140, 0, this)
         instanceLoadTimeSinceLastSave := new System.Int32(144, 276, this)
         ClickLevel := new System.Int32(156, 288, this)
+        state := new CrusadersGame.ChampionsGameInstance.InstanceState(172, 0, this)
         ;FE
+
+        class GameInstanceMode extends System.Enum
+        {
+            Type := "System.Int32"
+            Enum := {0:"Foreground", 1:"CatchUp", 2:"OfflineProgress", 3:"BackgroundProgress"}
+        }
+
+        class InstanceState extends System.Enum
+        {
+            Type := "System.Int32"
+            Enum := {0:"Running", 1:"Loading", 2:"WaitingForBGProgressStart", 3:"WaitingAfterBGProgress", 4:"None", 5:"Cleared", 6:"WorldMap"}
+        }
     }
 
     class Defs

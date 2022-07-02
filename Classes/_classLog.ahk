@@ -102,6 +102,8 @@ class _classLog
 
         Stop()
         {
+            if !(this.eventLog.Count())
+                this.Delete(eventLog)
             this.event.duration.Stop()
         }
     }

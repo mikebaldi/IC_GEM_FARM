@@ -1,7 +1,7 @@
 ;if !IsObject(_VirtualKeyInputs)
-    #Include %A_LineFile%\..\_VirtualKeyInputs.ahk
+;    #Include %A_LineFile%\..\_VirtualKeyInputs.ahk
 ;if !IsObject(_MemoryHandler)
-    #Include %A_LineFile%\..\Memory\_MemoryHandler.ahk
+ ;   #Include %A_LineFile%\..\Memory\_MemoryHandler.ahk
 
 class _HeroHandler
 {
@@ -33,13 +33,6 @@ class _HeroHandler
     {
         ;this.ResetPrevValues()
     }
-    /*
-    ResetPrevValues()
-    {
-        this.hero.Benched.prevValue := ""
-        this.hero.Level.prevValue := ""
-    }
-    */
 
     LevelUp(Lvl := 0, timeout := 5000, keys*)
     {
@@ -77,11 +70,15 @@ class _HeroHandler
             if (reqLvl < 9999)
             {
                 upgrades := ""
+                upgrades._items.UseCachedAddress(false)
+                upgrades.UseCachedAddress(false)
                 this.MaxLvl := reqLvl
                 return
             }
             --index
         }
+        upgrades._items.UseCachedAddress(false)
+        upgrades.UseCachedAddress(false)
         upgrades := ""
         this.MaxLvl := 9999
         return

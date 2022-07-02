@@ -1,4 +1,4 @@
-class _IC_FuncLibrary
+class _IC_FuncLibrary extends _Contained
 {
     __new()
     {
@@ -6,6 +6,7 @@ class _IC_FuncLibrary
         this.GameInstance := _MemoryHandler.InitGameInstance()
         this.ActiveCampaignData := _MemoryHandler.InitActiveCampaignData()
         this.AreaTransitioner := _MemoryHandler.InitAreaTransitioner()
+        this.ResetHandler := _MemoryHandler.InitResetHandler()
         this.TopBar := _MemoryHandler.InitTopBar()
         this.SleepMS := 100
         this.BuildFormationSlots()
@@ -61,6 +62,33 @@ class _IC_FuncLibrary
         return
     }
 
+    GetModronTargetArea()
+    {
+        g_Log.CreateEvent(A_ThisFunc)
+        offlineHandlerTA := -1
+        userDataTA := -1
+        offlineHandlerTA := this.GameInstance.offlineProgressHandler.modronSave.targetArea.Value
+        if (!offlineHandlerTA)
+            g_Log.AddDataSimple("offlineHandlerTA read failed")
+        modronHandler := this.GameInstance.Controller.userData.ModronHandler
+        modronHandler.UseCachedAddress(true)
+        _size := modronHandler.modronSaves._size.Value
+        index := 0
+        loop, %_size%
+        {
+            item := modronHandler.modronSaves.Item[index]
+            if (item.InstanceID.Value == 1)
+                userDataTA := item.targetArea.Value
+            index++
+        }
+        if (!userDataTA)
+            g_Log.AddDataSimple("userDataTA read failed")
+        if (offlineHandlerTA != userDataTA)
+            g_Log.AddDataSimple("userDataTA: " . userDataTA . ", offlineHandlerTA: " . offlineHandlerTA)
+        g_Log.EndEvent()
+        return offlineHandlerTA
+    }
+
     IsCurrentFormation(formation)
     {
         g_Log.CreateEvent(A_ThisFunc)
@@ -91,6 +119,43 @@ class _IC_FuncLibrary
         g_Log.AddData("match", match)
         g_Log.EndEvent()
         return match
+    }
+
+    IsOnWorldMap()
+    {
+        static lastRanTC := A_TickCount
+        static onWorldMapTC := 0
+        if (lastRan + 5000 < A_TickCount)
+            return false
+        lastRan := A_TickCount
+        if (this.ResetHandler.Resetting.Value != 1 AND this.GameInstance.state.Value == 6)
+        {
+            if !onWorldMapTC
+                onWorldMapTC := A_TickCount
+            else if (onWorldMapTC + 30000 < A_TickCount)
+            {
+                onWorldMapTC := 0
+                return true
+            }
+        }
+        else
+            onWorldMapTC := 0
+        return false
+    }
+
+    ResetFromWorldMap(objectiveID, serverCalls, client, hero, action)
+    {
+        g_Log.CreateEvent(A_ThisFunc)
+        client.CloseIC()
+        response := serverCalls.CallLoadAdventure(objectiveID)
+        ;to do add error handling for bad response
+        client.OpenIC()
+        Client.LoadAdventure(hero)
+        ;will have to figure out action/delegate or whatever this is called better.
+        ;if IsFunc(action)
+        ;    action()
+        g_Log.EndEvent()
+        return
     }
 
     SetClickLevel(value)
