@@ -67,22 +67,6 @@ class System
         }
     }
 
-    /*
-    class Collection extends System.Object
-    {
-        NewChild(parent, type, offset)
-        {
-            if (type[1].__Class == "System.List")
-                obj := new System.List(offset, offset, parent, type[2])
-            else if (type[1].__Class == "System.DIctionary")
-                obj := new System.Dictionary(offset, offset, parent, type[2], type[3])
-            else
-                obj := new type(offset, offset, parent)
-            return obj
-        }
-    }
-    */
-
     class _Collection
     {
         __new(parent, type)
@@ -93,14 +77,14 @@ class System
             return this
         }
 
-        GetObject(index, offset)
+        GetObjectByIndex(index, offset)
         {
             if !(this.CachedObjects.HasKey(index))
-                this.CachedObjects[index] := this.NewObject(offset)
+                this.CachedObjects[index] := this.CreateObject(offset)
             return this.CachedObjects[index]
         }
 
-        NewObject(offset)
+        CreateObject(offset)
         {
             if (this.Type[1].__Class == "System.List")
                 obj := new System.List(offset, offset, this.Parent, this.Type[2])
@@ -112,6 +96,72 @@ class System
         }
     }
 
+    class _Collection_WIP
+    {
+        __new(parent, type)
+        {
+            this.ParentObj := parent
+            this.Type := type
+            this.CachedObjects := {}
+            this.SetOffsetBaseAndStep()
+            return this
+        }
+
+        GetObjectByIndex(index)
+        {
+            if !(this.CachedObjects.HasKey(index))
+                this.CachedObjects[index] := this.CreateObject(index)
+            return this.CachedObjects[index]
+        }
+
+        CreateObject(index)
+        {
+            offset := this.GetOffset(index)
+            if (this.Type[1].__Class == "System.List")
+                obj := new System.List(offset, offset, this.ParentObj, this.Type[2])
+            else if (this.Type[1].__Class == "System.DIctionary")
+                obj := new System.Dictionary(offset, offset, this.ParentObj, this.Type[2], this.Type[3])
+            else
+                obj := new this.Type(offset, offset, this.ParentObj)
+            return obj
+        }
+
+        GetIndexByValueType(value)
+        {
+            count := this.GetIndexCount()
+            if !count
+                return -1
+            i := 0
+            loop %count%
+            {
+                obj := this.GetObjectByIndex(i)
+                if (key == obj.Value)
+                    return i
+                ++i
+            }
+            return -1
+        }
+
+        GetOffset(index)
+        {
+            return this.OffsetBase + (index * this.OffsetStep)
+        }
+    }
+
+    class _ItemCollection extends System._Collection_WIP
+    {
+        SetOffsetBaseAndStep()
+        {
+            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x20 : 0x10
+            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x8 : 0x4
+        }
+
+        GetIndexCount()
+        {
+            return this.ParentObj.ParentObj._size.Value
+        }
+    }
+
     ;item base is the memory class, and item type is the c# type
     class List extends System.Object
     {
@@ -120,35 +170,64 @@ class System
             this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            this.List := new System.Object(offset32, offset64, parentObject)
+            ;not sure what this.List is used for
+            ;this.List := new System.Object(offset32, offset64, parentObject)
             this._items := new System.Object(0x8, 0x10, this)
             this._size := new System.Int32(0xC, 0x18, this)
-            this.ItemOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x20 : 0x10
-            this.ItemOffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x8 : 0x4
-            this.ItemType := itemType
+            ;this.ItemOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x20 : 0x10
+            ;this.ItemOffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x8 : 0x4
+            ;this.ItemType := itemType
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
-            this.Items := new System._Collection(this._items, this.ItemType)
+            ;this.Items := new System._Collection(this._items, this.ItemType)
+            this.Items := new System._ItemCollection(this._items, itemType)
             return this 
         }
         
-        Size()
-        {
-            return this._size.GetValue()
-        }
+        ;Size()
+        ;{
+        ;    return this._size.GetValue()
+        ;}
 
-        GetItemOffset(index)
-        {
-            return this.ItemOffsetBase + (index * this.ItemOffsetStep)
-        }
+        ;GetItemOffset(index)
+        ;{
+        ;    return this.ItemOffsetBase + (index * this.ItemOffsetStep)
+        ;}
 
         Item[index]
         {
             get
             {
                 ;return this.NewChild(this._items, this.ItemType, this.GetItemOffset(index))
-                return this.Items.GetObject(index, this.GetItemOffset(index))
+                ;return this.Items.GetObjectByIndex(index, this.GetItemOffset(index))
+                return this.Items.GetObjectByIndex(index)
             }
+        }
+    }
+
+    class _DictionaryCollection extends System._Collection_WIP
+    {
+        GetIndexCount()
+        {
+            return this.ParentObj.ParentObj.count.Value
+        }
+    }
+
+    class _KeyCollection extends System._DictionaryCollection
+    {
+        SetOffsetBaseAndStep()
+        {
+            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x28 : 0x18
+            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
+        }
+    }
+
+    class _ValueCollection extends System._DictionaryCollection
+    {
+        SetOffsetBaseAndStep()
+        {
+            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x30 : 0x1C
+            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
         }
     }
 
@@ -159,18 +238,21 @@ class System
             this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            this.Dict := new System.Object(offset32, offset64, parentObject)
+            ;not sure what this is used for
+            ;this.Dict := new System.Object(offset32, offset64, parentObject)
             this.entries := new System.Object(0xC, 0x10, this)
             this.count := new System.Int32(0x20, 0x18, this)
-            this.KeyOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x28 : 0x18
-            this.ValueOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x30 : 0x1C
-            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
-            this.KeyType := keyType
-            this.ValueType := valueType
+            ;this.KeyOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x28 : 0x18
+            ;this.ValueOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x30 : 0x1C
+            ;this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
+            ;this.KeyType := keyType
+            ;this.ValueType := valueType
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
-            this.Keys := new System._Collection(this.entries, this.KeyType)
-            this.Values := new System._Collection(this.entries, this.ValueType)
+            ;this.Keys := new System._Collection(this.entries, this.KeyType)
+            this.Keys := new System._KeyCollection(this.entries, keyType)
+            ;this.Values := new System._Collection(this.entries, this.ValueType)
+            this.Values := new System._ValueCollection(this.entries, valueType)
             return this
         }
 
@@ -179,7 +261,8 @@ class System
             get
             {
                 ;return this.NewChild(this.entries, this.KeyType, this.GetKeyOffset(index))
-                return this.Keys.GetObject(index, this.GetKeyOffset(index))
+                ;return this.Keys.GetObjectByIndex(index, this.GetKeyOffset(index))
+                return this.Keys.GetObjectByIndex(index)
             }
         }
 
@@ -188,20 +271,21 @@ class System
             get
             {
                 ;return this.NewChild(this.entries, this.ValueType, this.GetValueOffset(index))
-                return this.Values.GetObject(index, this.GetValueOffset(index))
+                ;return this.Values.GetObjectByIndex(index, this.GetValueOffset(index))
+                return this.Values.GetObjectByIndex(index)
             }
         }
 
-        GetKeyOffset(index)
-        {
-            return this.KeyOffsetBase + (index * this.OffsetStep)
-        }
+        ;GetKeyOffset(index)
+        ;{
+        ;    return this.KeyOffsetBase + (index * this.OffsetStep)
+        ;}
 
-        GetValueOffset(index)
-        {
-            return this.ValueOffsetBase + (index * this.OffsetStep)
-        }
-
+        ;GetValueOffset(index)
+        ;{
+        ;    return this.ValueOffsetBase + (index * this.OffsetStep)
+        ;}
+        /*
         GetIndexFromKey(key)
         {
             count := this.count.GetValue()
@@ -231,6 +315,7 @@ class System
             }
             return -1
         }
+        */
     }
 
     class Generic extends System.Object

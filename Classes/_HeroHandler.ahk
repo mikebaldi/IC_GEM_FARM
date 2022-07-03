@@ -1,8 +1,3 @@
-;if !IsObject(_VirtualKeyInputs)
-;    #Include %A_LineFile%\..\_VirtualKeyInputs.ahk
-;if !IsObject(_MemoryHandler)
- ;   #Include %A_LineFile%\..\Memory\_MemoryHandler.ahk
-
 class _HeroHandler
 {
     __new(champID)
@@ -36,6 +31,7 @@ class _HeroHandler
 
     LevelUp(Lvl := 0, timeout := 5000, keys*)
     {
+        g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         this.hero.UseCachedAddress(true)
@@ -50,6 +46,7 @@ class _HeroHandler
             ElapsedTime := A_TickCount - StartTime
         }
         this.hero.UseCachedAddress(false)
+        g_Log.EndEvent()
         return
     }
 
@@ -59,7 +56,7 @@ class _HeroHandler
         upgrades := this.hero.allUpgradesOrdered.Value[0]
         ;assume address of upgrades list won't change during this look up.
         upgrades.UseCachedAddress(true)
-        _size := upgrades.Size()
+        _size := upgrades._size.Value ;.Size()
         index := _size - 1
         ;assume _items won't change during this look up.
         upgrades._items.UseCachedAddress(true)

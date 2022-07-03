@@ -257,15 +257,16 @@ class _MemoryHandler
         {
             get
             {
-                ;g_Log.CreateEvent("ChestCount ID: " . id)
-                index := this.chestCounts.GetIndexFromKey(id)
-                ;g_Log.AddData("index", index)
+                g_Log.CreateEvent("ChestCount ID: " . id)
+                ;index := this.chestCounts.GetIndexFromKey(id)
+                index := this.chestCounts.Keys.GetIndexByValueType(id)
+                g_Log.AddData("index", index)
                 if (index == -1)
                     value := 0
                 else
-                    value := this.chestCounts.Value[index].GetValue()
-                ;g_Log.AddData("count", value)
-                ;g_Log.EndEvent()
+                    value := this.chestCounts.Value[index].Value
+                g_Log.AddData("count", value)
+                g_Log.EndEvent()
                 return value
             }
         }

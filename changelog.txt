@@ -1,3 +1,10 @@
+v0.3.0, July 3, 2022
+
+    Modified memory collection objects for additional functionality and consistentcy.
+    Added logging to most functions.
+    Updated IsCurrentFormation method to take advantage of reason memory object changes.
+    Script may now be able to recover when stuck on world map.
+
 v0.2.0, July 2, 2022
 
     Added method to detect when stuck on world map.

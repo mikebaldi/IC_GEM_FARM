@@ -146,6 +146,7 @@ class _GemFarmFinal
         g_Log.LogStack()
         ;start new log event
         g_Log.CreateEvent("Gem Farm-Partial")
+        g_Log.AddData("gems", this.UserData.Gems)
         this.Reloaded := false
 
 
@@ -185,7 +186,8 @@ class _GemFarmFinal
                 this.CurrentZonePrev := 1
             }
             if (this.Funcs.IsOnWorldMap())
-                g_Log.AddData("IsOnWorldMap", "true")
+                this.Funcs.ResetFromWorldMap(this.CurrentObjective, this.ServerCalls, this.Client, this.Briv)
+                ;g_Log.AddData("IsOnWorldMap", "true")
             this.Funcs.ToggleAutoProgress(1)
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
@@ -202,6 +204,7 @@ class _GemFarmFinal
         g_Log.LogStack()
         this.RunCount += 1
         g_Log.CreateEvent("Gem Run " . this.RunCount)
+        g_Log.AddData("gems", this.UserData.Gems)
         g_Log.CreateEvent(A_ThisFunc)
         this.Funcs.WaitForFirstGold()
         this.Funcs.ToggleAutoProgress(0)
@@ -220,13 +223,31 @@ class _GemFarmFinal
         }
         g_Log.EndEvent()
     }
+    
+    StackFarmSetup()
+    {
+        g_Log.CreateEvent(A_ThisFunc)
+        _VirtualKeyInputs.Priority("w")
+        this.Funcs.WaitForTransition("w")
+        this.Funcs.ToggleAutoProgress(0)
+        this.Funcs.FallBackFromBossZone("w")
+        startTime := A_TickCount
+        elapsedTime := 0
+        while(this.Funcs.IsCurrentFormation(this.Settings.StackFormation) AND elapsedTime < 5000)
+        {
+            _VirtualKeyInputs.Priority("w")
+            sleep, 100
+            elapsedTime := A_TickCount - startTime
+        }
+        g_Log.EndEvent()
+    }
 
     RestartStack()
     {
         g_Log.CreateEvent(A_ThisFunc)
         currentZone := this.CurrentZone
         g_Log.AddData("CurrentZone", currentZone)
-        this.Briv.StackFarmSetup(this.Settings, this.Funcs)
+        this.StackFarmSetup()
         this.UpdateChestData()
         this.Client.CloseIC()
         this.BuyOrOpenChests()

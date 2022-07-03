@@ -124,7 +124,7 @@ class TV_MemoryView
     CreateItems(itemID)
     {
         this.TVdata[itemID].Object.List.SetAddress(true)
-        _size := this.TVdata[itemID].Object.ParentObj.Size()
+        _size := this.TVdata[itemID].Object.ParentObj._size.Value ;.Size()
         index := 0
         while (_size > index)
         {

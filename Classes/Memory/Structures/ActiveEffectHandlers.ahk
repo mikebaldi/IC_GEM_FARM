@@ -150,7 +150,7 @@ class ActiveEffectKeyHandler_Parent extends System.Object
         {
             ;effectKeys is a list of EffectKey
             effectKeys := effectKeysByKeyName.Value[index]
-            EK_size := effectKeys.Size()
+            EK_size := effectKeys._size.Value ;.Size()
             EK_index := 0
             loop %EK_size%
             {
@@ -160,7 +160,7 @@ class ActiveEffectKeyHandler_Parent extends System.Object
                     ;activeEffecthandlers is list of CrusadersGame.Effects.ActiveEffectKeyHandler
                     ;these are the base type of our desired handlers, usually.
                     activeEffectHandlers := parentEffectKeyHandler.activeEffectHandlers
-                    AEH_size := activeEffectHandlers.Size()
+                    AEH_size := activeEffectHandlers._size.Value ;.Size()
                     AEH_index := 0
                     loop %AEH_size%
                     {

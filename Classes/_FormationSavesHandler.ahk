@@ -12,7 +12,7 @@ class _FormationSavesHandler
     RebuildSavesList()
     {
         this.Saves := {}
-        _size := this.FormationSaves.Size()
+        _size := this.FormationSaves._size.Value ;.Size()
         if !_size
             return 0
         i := 0
@@ -37,7 +37,7 @@ class _FormationSavesHandler
             {
                 formation := {}
                 savesIndex := A_Index
-                _size := this.Saves[savesIndex].Formation.Size()
+                _size := this.Saves[savesIndex].Formation._size.Value ;.Size()
                 i := 0
                 loop %_size%
                     formation.Push(this.Saves[savesIndex].Formation.Item[i++].GetValue())

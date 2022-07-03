@@ -9,18 +9,7 @@ class _IC_FuncLibrary extends _Contained
         this.ResetHandler := _MemoryHandler.InitResetHandler()
         this.TopBar := _MemoryHandler.InitTopBar()
         this.SleepMS := 100
-        this.BuildFormationSlots()
         return this
-    }
-
-    BuildFormationSlots()
-    {
-        this.FormationSlots := {}
-        loop, 10
-        {
-            this.FormationSlots.Push(this.GameInstance.Controller.formation.slots.Item[A_Index - 1])
-        }
-        return
     }
     
     BypassBossBag()
@@ -34,6 +23,7 @@ class _IC_FuncLibrary extends _Contained
     {
         if mod(this.ActiveCampaignData.CurrentZone.Value, 5)
             return false
+        g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         while (!mod(this.ActiveCampaignData.CurrentZone.Value, 5) AND ElapsedTime < maxLoopTime)
@@ -43,6 +33,7 @@ class _IC_FuncLibrary extends _Contained
             ElapsedTime := A_TickCount - StartTime
         }
         this.WaitForTransition(spam)
+        g_Log.EndEvent()
         return true
     }
 
@@ -50,6 +41,7 @@ class _IC_FuncLibrary extends _Contained
     ; waitTime: max time in ms will wait to finish zone, lvlFormation: bool to call method, inputs: variadic param of inputs
     FinishZone(waitTime, lvlFormation, inputs*)
     {
+        g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         while (elapsedTime < waitTime AND this.ActiveCampaignData.QuestRemaining.Value > 0)
@@ -59,6 +51,7 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             elapsedTime := A_TickCount - startTime
         }
+        g_Log.EndEvent()
         return
     }
 
@@ -102,7 +95,7 @@ class _IC_FuncLibrary extends _Contained
         this.GameInstance.Controller.formation.slots.UseCachedAddress(true)
         loop, % formation.Count()
         {
-            heroID := this.FormationSlots[A_Index].hero.def.ID.Value
+            heroID := this.GameInstance.Controller.formation.slots.Item[A_Index - 1].hero.def.ID.Value
             g_Log.AddData("heroID", heroID)
             if (formation[A_index] == -1 AND !heroID)
             {
@@ -143,7 +136,7 @@ class _IC_FuncLibrary extends _Contained
         return false
     }
 
-    ResetFromWorldMap(objectiveID, serverCalls, client, hero, action)
+    ResetFromWorldMap(objectiveID, serverCalls, client, hero)
     {
         g_Log.CreateEvent(A_ThisFunc)
         client.CloseIC()
@@ -185,6 +178,7 @@ class _IC_FuncLibrary extends _Contained
 
     WaitForFirstGold( maxLoopTime := 30000 )
     {
+        g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         _VirtualKeyInputs.Priority("q")
@@ -194,6 +188,7 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             ElapsedTime := A_TickCount - StartTime
         }
+        g_Log.EndEvent()
         return ElapsedTime
     }
 
@@ -201,6 +196,7 @@ class _IC_FuncLibrary extends _Contained
     {
         if !(this.AreaTransitioner.IsTransitioning.Value)
             return
+        g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         while (this.AreaTransitioner.IsTransitioning.Value == 1 and ElapsedTime < maxLoopTime)
@@ -209,6 +205,7 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             ElapsedTime := A_TickCount - StartTime
         }
+        g_Log.EndEvent()
         return
     }
 }
