@@ -146,7 +146,8 @@ class _GemFarmFinal
         g_Log.LogStack()
         ;start new log event
         g_Log.CreateEvent("Gem Farm-Partial")
-        g_Log.AddData("gems", this.UserData.Gems)
+        g_Log.AddData("gems", this.UserData.Gems.Value)
+        g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
         this.Reloaded := false
 
 
@@ -204,7 +205,8 @@ class _GemFarmFinal
         g_Log.LogStack()
         this.RunCount += 1
         g_Log.CreateEvent("Gem Run " . this.RunCount)
-        g_Log.AddData("gems", this.UserData.Gems)
+        g_Log.AddData("gems", this.UserData.Gems.Value)
+        g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
         g_Log.CreateEvent(A_ThisFunc)
         this.Funcs.WaitForFirstGold()
         this.Funcs.ToggleAutoProgress(0)

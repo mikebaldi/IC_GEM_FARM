@@ -1,3 +1,7 @@
+v0.4.0, July 4, 2022
+
+    Fixed an error with logging that caused the script to crash.
+
 v0.3.0, July 3, 2022
 
     Modified memory collection objects for additional functionality and consistentcy.
