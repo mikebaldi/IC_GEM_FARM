@@ -22,7 +22,7 @@ class _MemoryHandler
     }
 
     ;Need to reconsider having all these inits in here. Getting huge and still lots could be added.
-    InitIdleGameManager()
+    CreateOrGetIdleGameManager()
     {
         if IsObject(this.IdleGameManager)
             return this.IdleGameManager
@@ -31,45 +31,45 @@ class _MemoryHandler
         return this.IdleGameManager
     }
 
-    InitGameInstance()
+    CreateOrGetGameInstance()
     {
         if IsObject(this.GameInstance)
             return this.GameInstance
         if !(this.StructuresDictionary.HasKey("IdleGameManager"))
-            this.InitIdleGameManager()
+            this.CreateOrGetIdleGameManager()
         this.GameInstance := this.IdleGameManager.game.gameInstances.Item[0]
         this.AddToStructures("GameInstance", this.GameInstance)
         return this.GameInstance
     }
 
-    InitHeroes()
+    CreateOrGetHeroes()
     {
         if IsObject(this.Heroes)
             return this.Heroes
         if !(this.StructuresDictionary.HasKey("GameInstance"))
-            this.InitGameInstance()
+            this.CreateOrGetGameInstance()
         this.Heroes := this.GameInstance.HeroHandler.parent.heroes
         this.AddToStructures("Heroes", this.Heroes)
         return this.Heroes
     }
 
-    InitUiController()
+    CreateOrGetUiController()
     {
         if IsObject(this.UiController)
             return this.UiController
         if !IsObject(this.IdleGameManager)
-            this.InitIdleGameManager()
+            this.CreateOrGetIdleGameManager()
         this.UiController := this.IdleGameManager.game.screenController.activeScreen.uiController
         this.AddtoStructures("UiController", this.UiController)
         return this.UiController
     }
 
-    InitActiveCampaignData()
+    CreateOrGetActiveCampaignData()
     {
         if IsObject(this.ActiveCampaignData)
             return this.ActiveCampaignData
         if !(this.StructuresDictionary.HasKey("GameInstance"))
-            this.InitGameInstance()
+            this.CreateOrGetGameInstance()
         this.ActiveCampaignData := new _MemoryHandler.__ActiveCampaignData(this.GameInstance)
         this.AddToStructures("ActiveCampaignData", this.ActiveCampaignData)
         return this.ActiveCampaignData
@@ -101,12 +101,12 @@ class _MemoryHandler
         }
     }
 
-    InitAreaTransitioner()
+    CreateOrGetAreaTransitioner()
     {
         if IsObject(this.AreaTransitioner)
             return this.AreaTransitioner
         if !IsObject(this.GameInstance)
-            this.InitGameInstance()
+            this.CreateOrGetGameInstance()
         this.AreaTransitioner := new _MemoryHandler.__AreaTransitioner(this.GameInstance)
         this.AddToStructures("AreaTransitioner", this.AreaTransitioner)
         return this.AreaTransitioner
@@ -130,12 +130,12 @@ class _MemoryHandler
         }
     }
 
-    InitResetHandler()
+    CreateOrGetResetHandler()
     {
         if IsObject(this.ResetHandler)
             return this.ResetHandler
         if !IsObject(this.GameInstance)
-            this.InitGameInstance()
+            this.CreateOrGetGameInstance()
         this.ResetHandler := new _MemoryHandler.__ResetHandler(this.GameInstance)
         this.AddToStructures("ResetHandler", this.ResetHandler)
         return this.ResetHandler
@@ -159,12 +159,12 @@ class _MemoryHandler
         }
     }
 
-    InitTopBar()
+    CreateOrGetTopBar()
     {
         if IsObject(this.TopBar)
             return this.TopBar
         if !IsObject(this.UiController)
-            this.InitUiController()
+            this.CreateOrGetUiController()
         this.TopBar := new _MemoryHandler.__TopBar(this.UiController)
         this.AddToStructures("TopBar", this.TopBar)
         return this.TopBar
@@ -181,12 +181,13 @@ class _MemoryHandler
         }
     }
 
-    InitLoadingScreen()
+    ;appears to be unused
+    CreateOrGetLoadingScreen()
     {
         if IsObject(this.LoadingScreen)
             return this.LoadingScreen
         if !(this.StructuresDictionary.HasKey("IdleGameManager"))
-            this.InitIdleGameManager()
+            this.CreateOrGetIdleGameManager()
         this.LoadingScreen := new _MemoryHandler.__LoadingScreen(this.IdleGameManager)
         this.AddToStructures("LoadingScreen", this.LoadingScreen)
         return this.LoadingScreen
@@ -226,12 +227,12 @@ class _MemoryHandler
         }
     }
 
-    InitUserData()
+    CreateOrGetUserData()
     {
         if IsObject(this.UserData)
             return this.UserData
         if !IsObject(this.GameInstance)
-            this.InitGameInstance()
+            this.CreateOrGetGameInstance()
         this.UserData := new _MemoryHandler.__UserData(this.GameInstance)
         this.UserData("UserData", this.UserData)
         return this.UserData

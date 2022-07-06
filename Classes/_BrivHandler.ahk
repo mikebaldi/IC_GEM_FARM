@@ -5,7 +5,7 @@ class _BrivHandler extends _HeroHandler
         this.ResetPrevValues()
         this.SteelbonesHandler := new BrivSteelbonesHandler
         this.UnnaturalHasteHandler := new BrivUnnaturalHasteHandler
-        gameInstance := _MemoryHandler.InitGameInstance()
+        gameInstance := _MemoryHandler.CreateOrGetGameInstance()
         this.BrivSprintStacks := gameInstance.Controller.userData.StatHandler.BrivSprintStacks
         this.BrivSteelbonesStacks := gameInstance.Controller.userData.StatHandler.BrivSteelBonesStacks
     }

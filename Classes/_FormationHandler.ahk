@@ -2,7 +2,7 @@ class _FormationHandler
 {
     __new()
     {
-        this.Heroes := _MemoryHandler.InitHeroes()
+        this.Heroes := _MemoryHandler.CreateOrGetHeroes()
         return this
     }
 

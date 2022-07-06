@@ -2,12 +2,12 @@ class _IC_FuncLibrary extends _Contained
 {
     __new()
     {
-        this.IdleGameManager := _MemoryHandler.InitIdleGameManager()
-        this.GameInstance := _MemoryHandler.InitGameInstance()
-        this.ActiveCampaignData := _MemoryHandler.InitActiveCampaignData()
-        this.AreaTransitioner := _MemoryHandler.InitAreaTransitioner()
-        this.ResetHandler := _MemoryHandler.InitResetHandler()
-        this.TopBar := _MemoryHandler.InitTopBar()
+        this.IdleGameManager := _MemoryHandler.CreateOrGetIdleGameManager()
+        this.GameInstance := _MemoryHandler.CreateOrGetGameInstance()
+        this.ActiveCampaignData := _MemoryHandler.CreateOrGetActiveCampaignData()
+        this.AreaTransitioner := _MemoryHandler.CreateOrGetAreaTransitioner()
+        this.ResetHandler := _MemoryHandler.CreateOrGetResetHandler()
+        this.TopBar := _MemoryHandler.CreateOrGetTopBar()
         this.SleepMS := 100
         return this
     }

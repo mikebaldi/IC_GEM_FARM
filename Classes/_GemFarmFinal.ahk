@@ -61,11 +61,11 @@ class _GemFarmFinal
         g_Log.AddData("ServerCalls", this.ServerCalls)
 
         _MemoryHandler.Refresh()
-        this.IdleGameManager := _MemoryHandler.InitIdleGameManager()
-        this.GameInstance := _MemoryHandler.InitGameInstance()
-        this.ResetHandler := _MemoryHandler.InitResetHandler()
-        this.ActiveCampaignData := _MemoryHandler.InitActiveCampaignData()
-        this.UserData := _MemoryHandler.InitUserData()
+        this.IdleGameManager := _MemoryHandler.CreateOrGetIdleGameManager()
+        this.GameInstance := _MemoryHandler.CreateOrGetGameInstance()
+        this.ResetHandler := _MemoryHandler.CreateOrGetResetHandler()
+        this.ActiveCampaignData := _MemoryHandler.CreateOrGetActiveCampaignData()
+        this.UserData := _MemoryHandler.CreateOrGetUserData()
 
         this.CurrentObjective := this.ActiveCampaignData.CurrentObjective.Value
         g_Log.AddDataSimple("CurrentObjective: " . this.CurrentObjective)

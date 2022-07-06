@@ -2,9 +2,9 @@ class _ClientHandler
 {
     __new()
     {
-        this.GameManager := _MemoryHandler.InitIdleGameManager()
-        this.GameInstance := _MemoryHandler.InitGameInstance()
-        this.Loader := _MemoryHandler.InitLoadingScreen()
+        this.GameManager := _MemoryHandler.CreateOrGetIdleGameManager()
+        this.GameInstance := _MemoryHandler.CreateOrGetGameInstance()
+        this.Loader := _MemoryHandler.CreateOrGetLoadingScreen()
         this.MemoryLog := _MemoryLogHandler.CreateOrGetInstance()
         this.InitMemoryLog()
         this.PID := 0
@@ -171,7 +171,7 @@ class _ClientHandler
     LoadAdventure(hero)
     {
         g_Log.CreateEvent(A_ThisFunc)
-        starTime := A_TickCount
+        startTime := A_TickCount
         elapsedTime := 0
         _VirtualKeyInputs.Priority("e", hero.Fkey)
         ;benched := hero.Benched

@@ -2,7 +2,7 @@ class _QTHandler
 {
     __new()
     {
-        this.ActiveCampaignData := _MemoryHandler.InitActiveCampaignData()
+        this.ActiveCampaignData := _MemoryHandler.CreateOrGetActiveCampaignData()
         this.Areas := this.ActiveCampaignData.adventureDef.areas
         this.ID := 67
         this.BuildList()

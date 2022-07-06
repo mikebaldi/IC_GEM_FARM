@@ -2,7 +2,7 @@ class _FormationSavesHandler
 {
     __new()
     {
-        this.GameInstance := _MemoryHandler.InitGameInstance()
+        this.GameInstance := _MemoryHandler.CreateOrGetGameInstance()
         this.FormationSaves := this.GameInstance.FormationSaveHandler.formationSavesV2
         this.Saves := {}
         return this

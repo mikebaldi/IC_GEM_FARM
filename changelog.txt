@@ -1,3 +1,8 @@
+v0.4.1, July 6, 2022
+
+    Fixed Load Adventure method so it should no longer get stuck indefinitely.
+    Changed some naming conventions.
+
 v0.4.0, July 4, 2022
 
     Fixed an error with logging that caused the script to crash.

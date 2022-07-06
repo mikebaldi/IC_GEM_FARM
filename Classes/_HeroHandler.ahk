@@ -4,7 +4,7 @@ class _HeroHandler
     {
         _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
         _MemoryHandler.Refresh()
-        heroes := _MemoryHandler.InitHeroes()
+        heroes := _MemoryHandler.CreateOrGetHeroes()
         this.ChampID := champID
         this.hero := heroes.Item[champID - 1]
         this.hero.UseCachedAddress(true)
