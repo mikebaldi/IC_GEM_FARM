@@ -20,3 +20,4 @@ Known Issues:
 Missing our out of date EGS offsets
 QT handler stops working if script is reloaded during the run.
 Methods to delete dictionary entries don't appear to work, need to better understand how object delete method works.
+Script appears to get stuck on World Map even though it knows it is on World Map.

@@ -106,7 +106,7 @@ class ActiveEffectKeyHandler extends System.Object
     {
         this.Offset := 0
         this.GetAddress := this.variableGetAddress
-        this.ParentObj := new ActiveEffectKeyHandler_Parent(_MemoryHandler.InitHeroes(), this.ChampID, this.UpgradeID, this.EffectID, this)
+        this.ParentObj := new ActiveEffectKeyHandler_Parent(_MemoryHandler.CreateOrGetHeroes(), this.ChampID, this.UpgradeID, this.EffectID, this)
         this.CachedAddress := ""
         this.ConsecutiveReads := 0
         return this

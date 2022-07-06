@@ -98,8 +98,6 @@ class _ClientHandler
             elapsedTime := A_TickCount - startTime
             ++i
         }
-        g_Log.AddData("i", i)
-        g_Log.AddData("elapsedTime", elapsedTime)
         if (elapsedTime > 60000)
         {
             this.CloseIC()

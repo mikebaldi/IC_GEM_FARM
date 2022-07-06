@@ -1,3 +1,7 @@
+v0.4.2 July 6, 2022
+
+    Fixed a bug with Active Effect Handlers not properly working due to the naming convention changes.
+    
 v0.4.1, July 6, 2022
 
     Fixed Load Adventure method so it should no longer get stuck indefinitely.
