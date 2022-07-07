@@ -262,7 +262,7 @@ class _MemoryHandler
                 ;index := this.chestCounts.GetIndexFromKey(id)
                 index := this.chestCounts.Keys.GetIndexByValueType(id)
                 g_Log.AddData("index", index)
-                if (index == -1)
+                if (index < 0)
                     value := 0
                 else
                     value := this.chestCounts.Value[index].Value

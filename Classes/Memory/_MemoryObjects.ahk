@@ -135,11 +135,11 @@ class System
             loop %count%
             {
                 obj := this.GetObjectByIndex(i)
-                if (key == obj.Value)
+                if (value == obj.Value)
                     return i
                 ++i
             }
-            return -1
+            return -2
         }
 
         GetOffset(index)

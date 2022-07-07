@@ -14,6 +14,7 @@ Rework the the various function library classes with CreateOrGetInstance methods
 Standardize memory code
 Collect data on load game and adventure and update methods accordingly
 Try to fix JSON class to parse class objects and detect recursion.
+Fix Known Issues.
 
 Known Issues:
 
