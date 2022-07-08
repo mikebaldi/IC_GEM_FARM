@@ -1,3 +1,7 @@
+v0.4.4 July 7, 2022
+
+    Temporary 'fix' to QT Handler to allow for reloading script without restarting client.
+
 v0.4.3 July 7, 2022
 
     Fixed a bug with collection memory object get index functions. Script should now open chests properly.

@@ -35,11 +35,13 @@ class _QTHandler
         }
         if !this.ID
             this.ID := 67 ;arbitrary pick
-        loop, 50
-        {
-            if (this.List[A_Index].defaultID == this.ID)
-                this.List[A_Index].setBackground := false
-        }
+        ;temporary 'fix' so the script can reload without restarting game.
+        ;even areas defined by CNE to have correct id will have their id written to, making for one set of redundant writes every run.
+        ;loop, 50
+        ;{
+        ;    if (this.List[A_Index].defaultID == this.ID)
+        ;        this.List[A_Index].setBackground := false
+        ;}
         this.Areas.UseCachedAddress(false)
         return
     }
