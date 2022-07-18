@@ -114,43 +114,6 @@ class _IC_FuncLibrary extends _Contained
         return match
     }
 
-    IsOnWorldMap()
-    {
-        static lastRanTC := A_TickCount
-        static onWorldMapTC := 0
-        if (lastRan + 5000 < A_TickCount)
-            return false
-        lastRan := A_TickCount
-        if (this.ResetHandler.Resetting.Value != 1 AND this.GameInstance.state.Value == 6)
-        {
-            if !onWorldMapTC
-                onWorldMapTC := A_TickCount
-            else if (onWorldMapTC + 30000 < A_TickCount)
-            {
-                onWorldMapTC := 0
-                return true
-            }
-        }
-        else
-            onWorldMapTC := 0
-        return false
-    }
-
-    ResetFromWorldMap(objectiveID, serverCalls, client, hero)
-    {
-        g_Log.CreateEvent(A_ThisFunc)
-        client.CloseIC()
-        response := serverCalls.CallLoadAdventure(objectiveID)
-        ;to do add error handling for bad response
-        client.OpenIC()
-        Client.LoadAdventure(hero)
-        ;will have to figure out action/delegate or whatever this is called better.
-        ;if IsFunc(action)
-        ;    action()
-        g_Log.EndEvent()
-        return
-    }
-
     SetClickLevel(value)
     {
         clickLevel := this.GameInstance.ClickLevel.Value

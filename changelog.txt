@@ -1,3 +1,8 @@
+v0.5.0 July 18, 2022
+
+    Fix to recover when on world map.
+    Adjusted the way the script handles loading client and adventure.
+    
 v0.4.4 July 7, 2022
 
     Temporary 'fix' to QT Handler to allow for reloading script without restarting client.

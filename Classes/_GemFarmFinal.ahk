@@ -8,6 +8,7 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_LineFile%\..\_BrivHandler.ahk
 #Include %A_LineFile%\..\_SentryHandler.ahk
 #Include %A_LineFile%\..\_ClientHandler.ahk
+#Include %A_LineFile%\..\_IC_ClientHandler.ahk
 #Include %A_LineFile%\..\_IC_FuncLibrary.ahk
 #Include %A_LineFile%\..\_ServerCalls.ahk
 #Include %A_LineFile%\..\_QTHandler.ahk
@@ -24,7 +25,7 @@ class _GemFarmFinal
             ExitApp
         }
         this.Settings := settings
-        this.Client := new _ClientHandler
+        this.Client := new _IC_ClientHandler(settings.Exe, settings.InstallPath)
         this.Briv := new _BrivHandler(58)
         this.Funcs := _IC_FuncLibrary.CreateOrGetInstance()
         this.RunCount := 0
@@ -67,8 +68,10 @@ class _GemFarmFinal
         this.ActiveCampaignData := _MemoryHandler.CreateOrGetActiveCampaignData()
         this.UserData := _MemoryHandler.CreateOrGetUserData()
 
-        this.CurrentObjective := this.ActiveCampaignData.CurrentObjective.Value
-        g_Log.AddDataSimple("CurrentObjective: " . this.CurrentObjective)
+        currentObjective := this.ActiveCampaignData.CurrentObjective.Value
+        if (currentObjective)
+            this.Client.CurrentObjective := currentObjective
+        g_Log.AddDataSimple("CurrentObjective: " . currentObjective)
 
         this.ModronTargetArea := this.Funcs.GetModronTargetArea()
         g_Log.AddDataSimple("ModronTargetArea: " . this.ModronTargetArea)
@@ -153,11 +156,9 @@ class _GemFarmFinal
 
         loop
         {
-            if !(this.Client.SafetyCheck())
+            if !(this.Client.DoesWinExist())
             {
-                this.Client.OpenIC(this.Settings.InstallPath)
-                this.Client.LoadAdventure(this.Briv)
-                this.Client.MemoryLog.ResetPrevValues()
+                this.Client.OpenIC()
                 this.QTHandler.SetAreas()
                 this.CurrentZonePrevTime := A_TickCount
             }
@@ -186,9 +187,8 @@ class _GemFarmFinal
                 this.DoZoneOne()
                 this.CurrentZonePrev := 1
             }
-            if (this.Funcs.IsOnWorldMap())
-                this.Funcs.ResetFromWorldMap(this.CurrentObjective, this.ServerCalls, this.Client, this.Briv)
-                ;g_Log.AddData("IsOnWorldMap", "true")
+            if (this.Client.IsOnWorldMap())
+                this.Client.ResetFromWorldMap()
             this.Funcs.ToggleAutoProgress(1)
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
@@ -251,12 +251,9 @@ class _GemFarmFinal
         g_Log.AddData("CurrentZone", currentZone)
         this.StackFarmSetup()
         this.UpdateChestData()
-        this.Client.CloseIC()
+        this.Client.Close()
         this.BuyOrOpenChests()
-        this.Client.OpenIC(this.Settings.InstallPath)
-        ;load adventure should be a ic func class method
-        this.Client.LoadAdventure(this.Briv)
-        this.Client.MemoryLog.ResetPrevValues()
+        this.Client.OpenIC()
         ;correct a roll back
         if (currentZone > this.ActiveCampaignData.HighestZone.Value)
         {
@@ -295,8 +292,6 @@ class _GemFarmFinal
         elapsedTime := 0
         while (this.ResetHandler.Resetting.Value == 1 AND elapsedTime < 60000)
         {
-            this.Client.MemoryLog.state.Value
-            this.Client.MemoryLog.InstanceMode.Value
             sleep, 250
             elapsedTime := A_TickCount - startTime
         }
@@ -304,11 +299,9 @@ class _GemFarmFinal
         if (elapsedTime > 60000)
         {
             g_Log.AddData("Stuck Resetting: elapsedTime", elapsedTime)
-            this.Client.CloseIC("Stuck Resetting")
+            this.Client.Close()
             sleep, 250
             this.Client.OpenIC()
-            this.Client.LoadAdventure()
-            this.Client.MemoryLog.ResetPrevValues()
         }
         this.CurrentZonePrevTime := A_TickCount
         g_Log.EndEvent()
