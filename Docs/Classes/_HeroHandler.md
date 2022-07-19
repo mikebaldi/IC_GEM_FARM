@@ -22,52 +22,52 @@ A class for handling champions.
 
 ### Methods
 
-    #### new
+- new
 
-        Creates a new instance of the class.
+    Creates a new instance of the class.
 
-        ##### Parameters
+    - Parameters
 
-            - champID: The id of the champion.
+        - champID: The id of the champion.
 
-        ##### Returns
+    - Returns
 
-            Instance of the class.
+        - Instance of the class.
 
-        ##### Notes
+    - Notes
 
-            - Error handling exists only for a failed memory read of the champion seat.
-            - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
+        - Error handling exists only for a failed memory read of the champion seat.
+        - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
 
-    #### LevelUp
+- LevelUp
 
-        Sends FKey and additional inputs if desired until a target level or timeout is reached.
+    Sends FKey and additional inputs if desired until a target level or timeout is reached.
 
-        ##### Parameters
+    - Parameters
 
-            - Lvl (optional): The target level desired. If nothing is passed, the target level is set as this.MaxLvl.
-            - timeout (optiona): The time in miliseconds the method will attempt to reach the target level. Default value is 5000.
-            - keys (variadic): One or more keys to input along with the Fkey to level. The Fkey should not be passed.
+        - Lvl (optional): The target level desired. If nothing is passed, the target level is set as this.MaxLvl.
+        - timeout (optiona): The time in miliseconds the method will attempt to reach the target level. Default value is 5000.
+        - keys (variadic): One or more keys to input along with the Fkey to level. The Fkey should not be passed.
 
-        ##### Returns
+    - Returns
 
-            Nothing
+        Nothing
 
-    #### SetMaxLvl
+- SetMaxLvl
 
-        Sets this.MaxLvl.
+    Sets this.MaxLvl.
 
-        ##### Parameters
+    - Parameters
 
-            None
+        None
         
-        ##### Returns
+    - Returns
 
-            Nothing
+        Nothing
 
-        ##### Notes
+    - Notes
 
-            - Reads through a list of ordered upgrades ignoring values 9999 or higher.
+        Reads through a list of ordered upgrades ignoring values 9999 or higher.
 
             
 
