@@ -23,6 +23,7 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 ### Methods
 
 - new
+
     Creates a new instance of the class with all fields set.
 
     - Parameters
@@ -40,6 +41,7 @@ A class for handling champions, primarily used by _FormationHandler class or as 
         - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
 
 - LevelUp
+
     Sends FKey and additional inputs if desired until a target level or timeout is reached.
 
     - Parameters
@@ -52,12 +54,15 @@ A class for handling champions, primarily used by _FormationHandler class or as 
         Nothing
 
 - SetMaxLvl
+
     Sets MaxLvl field to the final upgrade required level.
 
     - Parameters
+
         None
         
     - Returns
+
         Nothing
 
     - Notes
@@ -65,12 +70,15 @@ A class for handling champions, primarily used by _FormationHandler class or as 
         - Reads through a list of ordered upgrades from the end of the list ignoring values 9999 or higher.
 
 - SetMaxLvlToLastSpec
+
     Sets MaxLvl field to the final specialization upgrade required level.
 
     - Parameters
+    
         None
         
     - Returns
+
         Nothing
 
     - Notes
