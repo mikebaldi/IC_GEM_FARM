@@ -11,7 +11,12 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 
 ### Fields
 
-- Benched: A reference to an instance of CrusadersGame.GameScreen.Hero.Benched memory object for the given champion.
+<details><summary>Benched</summary>
+
+- A reference to an instance of CrusadersGame.GameScreen.Hero.Benched memory object for the given champion.
+- Type: System.Boolean
+</details>
+
 - ChampID: The given champion's ID.
 - FKey: Fkey input to level the given champion.
 - hero: A reference to an instance of CrusadersGame.GameScreen.Hero memory object for the given champion.
@@ -38,43 +43,43 @@ Creates a new instance of the class with all fields set.
 </details>
 
 <details><summary>LevelUp</summary>
+Sends FKey and additional inputs if desired until a target level or timeout is reached.
 
-    Sends FKey and additional inputs if desired until a target level or timeout is reached.
-    - Parameters
-        - Lvl (optional): The target level desired. If nothing is passed, the target level is set as this.MaxLvl.
-        - timeout (optiona): The time in miliseconds the method will attempt to reach the target level. Default value is 5000.
-        - keys (variadic): One or more keys to input along with the Fkey to level. The Fkey should not be passed.
+- Parameters
+    - Lvl (optional): The target level desired. If nothing is passed, the target level is set as this.MaxLvl.
+    - timeout (optiona): The time in miliseconds the method will attempt to reach the target level. Default value is 5000.
+    - keys (variadic): One or more keys to input along with the Fkey to level. The Fkey should not be passed.
 
-    - Returns
-        - Nothing
+- Returns
+    - Nothing
 </details>
 
 <details><summary>SetMaxLvl</summary>
+Sets MaxLvl field to the final upgrade required level.
 
-    Sets MaxLvl field to the final upgrade required level.
-    - Parameters
-        - None
-        
-    - Return
-        - Nothing
+- Parameters
+    - None
+    
+- Return
+    - Nothing
 
-    - Notes
-        - Primiarly used internally at construction of a new instance, but can be called any time.
-        - Reads through a list of ordered upgrades from the end of the list ignoring values 9999 or higher.
+- Notes
+    - Primiarly used internally at construction of a new instance, but can be called any time.
+    - Reads through a list of ordered upgrades from the end of the list ignoring values 9999 or higher.
 </details>
 
 <details><summary>SetMaxLvlToLastSpec</summary>
+Sets MaxLvl field to the final specialization upgrade required level.
 
-    Sets MaxLvl field to the final specialization upgrade required level.
-    - Parameters
-        - None
-        
-    - Returns
-        - Nothing
+- Parameters
+    - None
+    
+- Returns
+    - Nothing
 
-    - Notes
-        - Primiarly used internally at construction of a new instance, but can be called any time.
-        - Reads through a list of ordered upgrades from the end of the list ignoring upgrades without a specilization name.
+- Notes
+    - Primiarly used internally at construction of a new instance, but can be called any time.
+    - Reads through a list of ordered upgrades from the end of the list ignoring upgrades without a specilization name.
 </details>
 
             
