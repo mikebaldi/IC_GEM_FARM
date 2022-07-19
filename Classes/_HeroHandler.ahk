@@ -32,6 +32,8 @@ class _HeroHandler
     LevelUp(Lvl := 0, timeout := 5000, keys*)
     {
         g_Log.CreateEvent(A_ThisFunc)
+        if !Lvl
+            Lvl := this.MaxLvl
         startTime := A_TickCount
         elapsedTime := 0
         this.hero.UseCachedAddress(true)
