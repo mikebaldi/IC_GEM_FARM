@@ -105,7 +105,7 @@ class _GemFarmFinal
 
         ;build fkey input data
         this.Formation := new _FormationHandler
-        this.Formation.SetFormation(formation)
+        this.Formation.SetFormation(formation, 58)
         formation := ""
         tempObj := {}
         size := this.Formation.Formation.Count()
@@ -117,13 +117,13 @@ class _GemFarmFinal
             if (this.Formation.Formation[i].ChampID == 52)
             {
                 this.useSentry := true
-                this.Formation.Formation[i].MaxLvl := 225
+                ;this.Formation.Formation[i].MaxLvl := 225
                 this.Sentry := new _SentryHandler(52)
             } 
-            else if (this.Formation.Formation[i].ChampID == 91)
-                this.Formation.Formation[i].MaxLvl := 310
-            else if (this.Formation.Formation[i].ChampID == 102)
-                this.Formation.Formation[i].MaxLvl := 250
+            ;else if (this.Formation.Formation[i].ChampID == 91)
+            ;    this.Formation.Formation[i].MaxLvl := 310
+            ;else if (this.Formation.Formation[i].ChampID == 102)
+            ;    this.Formation.Formation[i].MaxLvl := 250
             ;build a temp object to log the formation handler formation
             tempObj[i] := {}
             for k, v in this.Formation.Formation[i]

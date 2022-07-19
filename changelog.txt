@@ -1,6 +1,7 @@
-v0.6.0 July ?, 2022
+v0.6.0 July 19, 2022
 
     Added code to pull Briv on boss zones by swapping to 'e' formation.
+    _HeroHandler class will now set max level at last upgrade or last specialization.
 
 v0.5.0 July 18, 2022
 

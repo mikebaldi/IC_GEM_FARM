@@ -7,7 +7,6 @@ To Do List:
 - Create docs
 - Optimization
 - Nullable memory object
-- Update formation handler with a method that stops leveling champions after specializations.
 - Some sort of method that can have methods added or removed from it.
 - Rework the the various function library classes with CreateOrGetInstance methods
 - Standardize memory code

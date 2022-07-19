@@ -8,7 +8,7 @@ class _FormationHandler
 
     ;consider setting formation by a_index to have key for formation slot from formation param, need to review formation param format.
     ;consider using a dictionary of formations. one use potentially be to confirm if formation is loaded in adventure.
-    SetFormation(formation)
+    SetFormation(formation, maxLvlChamps*)
     {
         this.Formation := {}
         size := formation.Count()
@@ -18,10 +18,21 @@ class _FormationHandler
             champID := formation[A_Index]
             ;empty slots are defined as -1
             if (champID > 0)
-                hero := new _HeroHandler(champID)
+            {
+                setMaxLvl := false
+                for k, v in maxLvlChamps
+                {
+                    if (champID == v)
+                    {
+                        setMaxLvl := true
+                        break
+                    }
+                }
+                hero := new _HeroHandler(champID, setMaxLvl)
+            }
             else
                 continue
-            hero.SetMaxLvl()
+            ;hero.SetMaxLvl()
             this.Formation.Push(hero)
         }
         this.Heroes.UseCachedAddress(false)
