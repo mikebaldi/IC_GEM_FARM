@@ -4,10 +4,10 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 
 ### Uses
 
-- [Classes\Memory\_MemoryHandler.AHK](Memory\_MemoryHandler.md)
-- [Classes\Memory\_MemoryObjects.AHK](Memory\_MemoryObjects.md)
+- [Classes\Memory\\_MemoryHandler.AHK](Memory\_MemoryHandler.md)
+- [Classes\Memory\\_MemoryObjects.AHK](Memory\_MemoryObjects.md)
 - [Classes\Memory\Structures\IdleGameManager.AHK](Memory\Structures\_IdleGameManager.md)
-- [Classes\_VirtualKeyInputs.AHK](_VirtualKeyInputs.md)
+- [Classes\\_VirtualKeyInputs.AHK](_VirtualKeyInputs.md)
 
 ### Fields
 
@@ -16,14 +16,41 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 - A reference to an instance of CrusadersGame.GameScreen.Hero.Benched memory object for the given champion.
 - Type: System.Boolean
 </details>
+<details><summary>ChampID</summary>
 
-- ChampID: The given champion's ID.
-- FKey: Fkey input to level the given champion.
-- hero: A reference to an instance of CrusadersGame.GameScreen.Hero memory object for the given champion.
-- Level: A reference to an instance of CrusadersGame.GameScreen.Hero.Level memory object for the given champion.
-- MaxLvl: The given champion's maximum level, as read from memory. Can be set to last specialization choice.
-- Name: The given champion's name, as read from memory.
-- Seat: The given champion's seat, as read from memory.
+- The given champion's ID.
+- Type: Integer
+</details>
+<details><summary>FKey</summary>
+
+- Fkey input to level the given champion.
+- Type: String
+</details>
+<details><summary>hero</summary>
+
+- A reference to an instance of CrusadersGame.GameScreen.Hero memory object for the given champion.
+- Type: System.Object
+</details>
+<details><summary>Level</summary>
+
+- A reference to an instance of CrusadersGame.GameScreen.Hero.Level memory object for the given champion.
+- Type: System.Int32
+</details>
+<details><summary>MaxLvl</summary>
+
+- The given champion's maximum level, as read from memory. Can be set to last specialization choice.
+- Type: Integer
+</details>
+<details><summary>Name</summary>
+
+- The given champion's name, as read from memory.
+- Type: String
+</details>
+<details><summary>Seat</summary>
+
+- The given champion's seat, as read from memory.
+- Type: System.Int32
+</details>
 
 ### Methods
 
