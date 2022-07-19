@@ -24,6 +24,7 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 
 <details><summary>new</summary>
 Creates a new instance of the class with all fields set.
+
 - Parameters
     - champID (integer): The id of the champion.
     - setMaxLvl (optional, boolean): Default value is false and will set MaxLvl field to last specialization choice. True will set MaxLvl field to last upgrade.
@@ -36,7 +37,7 @@ Creates a new instance of the class with all fields set.
     - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
 </details>
 
-- LevelUp
+<details><summary>LevelUp</summary>
 
     Sends FKey and additional inputs if desired until a target level or timeout is reached.
     - Parameters
@@ -46,8 +47,9 @@ Creates a new instance of the class with all fields set.
 
     - Returns
         - Nothing
+</details>
 
-- SetMaxLvl
+<details><summary>SetMaxLvl</summary>
 
     Sets MaxLvl field to the final upgrade required level.
     - Parameters
@@ -59,8 +61,9 @@ Creates a new instance of the class with all fields set.
     - Notes
         - Primiarly used internally at construction of a new instance, but can be called any time.
         - Reads through a list of ordered upgrades from the end of the list ignoring values 9999 or higher.
+</details>
 
-- SetMaxLvlToLastSpec
+<details><summary>SetMaxLvlToLastSpec</summary>
 
     Sets MaxLvl field to the final specialization upgrade required level.
     - Parameters
@@ -72,6 +75,7 @@ Creates a new instance of the class with all fields set.
     - Notes
         - Primiarly used internally at construction of a new instance, but can be called any time.
         - Reads through a list of ordered upgrades from the end of the list ignoring upgrades without a specilization name.
+</details>
 
             
 
