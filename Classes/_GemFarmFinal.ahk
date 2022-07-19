@@ -179,6 +179,11 @@ class _GemFarmFinal
                     this.Briv.HasteStacks := this.Settings.TargetStacks
             }
 
+            if (this.Settings.AvoidBosses AND !Mod(this.CurrentZone, 5))
+                _VirtualKeyInputs.Priority("{Right}", "{e}")
+            else
+                _VirtualKeyInputs.Priority("{Right}", "{q}")
+
             if (this.ResetHandler.Resetting.Value == 1)
                 this.ModronReset()
 
@@ -194,7 +199,6 @@ class _GemFarmFinal
             this.Formation.LevelFormation()
             this.Sentry.SetOneKill()
             this.QTHandler.SetBackgrounds()
-            _VirtualKeyInputs.Priority("{Right}", "{q}")
             ;let the script catch up
             sleep, 10
         }

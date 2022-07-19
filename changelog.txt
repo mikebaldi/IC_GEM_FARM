@@ -1,3 +1,7 @@
+v0.6.0 July ?, 2022
+
+    Added code to pull Briv on boss zones by swapping to 'e' formation.
+
 v0.5.0 July 18, 2022
 
     Fix to recover when on world map.
