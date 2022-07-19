@@ -22,19 +22,19 @@ A class for handling champions, primarily used by _FormationHandler class or as 
 
 ### Methods
 
-- new
+<details><summary>new</summary>
+Creates a new instance of the class with all fields set.
+- Parameters
+    - champID (integer): The id of the champion.
+    - setMaxLvl (optional, boolean): Default value is false and will set MaxLvl field to last specialization choice. True will set MaxLvl field to last upgrade.
 
-    Creates a new instance of the class with all fields set.
-    - Parameters
-        - champID (integer): The id of the champion.
-        - setMaxLvl (optional, boolean): Default value is false and will set MaxLvl field to last specialization choice. True will set MaxLvl field to last upgrade.
+- Returns
+    - Instance of the class.
 
-    - Returns
-        - Instance of the class.
-
-    - Notes
-        - Error handling exists only for a failed memory read of the champion seat.
-        - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
+- Notes
+    - Error handling exists only for a failed memory read of the champion seat.
+    - this.Init() is called for derived classes that desire adding additionaly code to the constructor.
+</details>
 
 - LevelUp
 
