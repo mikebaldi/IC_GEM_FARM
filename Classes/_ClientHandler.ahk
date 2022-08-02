@@ -17,7 +17,7 @@ class _ClientHandler2
         if WinExist(this.WinTitle)
             SendMessage, 0x112, 0xF060,,, % this.WinTitle,,,, 10000 ; WinClose
         WinWaitClose, % this.WinTitle,, 10
-        if WinExist(this.WinTitle)
+        while WinExist(this.WinTitle)
             WinKill
         g_Log.EndEvent()
         return

@@ -1,3 +1,9 @@
+v0.6.1 Aug 2, 2022
+
+    Fixed a bug in the method used to close the game.
+    Added redundancy in the method used to check if the game is stuck in a modron reset.
+    Memory Object documentation.
+
 v0.6.0 July 19, 2022
 
     Added code to pull Briv on boss zones by swapping to 'e' formation.

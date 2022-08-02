@@ -294,7 +294,7 @@ class _GemFarmFinal
         g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
-        while (this.ResetHandler.Resetting.Value == 1 AND elapsedTime < 60000)
+        while (this.ResetHandler.Resetting.Value == 1 AND this.CurrentZone != 1 AND elapsedTime < 60000)
         {
             sleep, 250
             elapsedTime := A_TickCount - startTime

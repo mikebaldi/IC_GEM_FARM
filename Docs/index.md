@@ -1,5 +1,7 @@
 # IC_GEM_Farm Documentation
 
-## Classes
+## Files
+
+[_MemoryObjects.AHK](Classes/_MemoryObjects.md)
 
 [_HeroHandler](Classes/_HeroHandler.md)

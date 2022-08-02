@@ -71,35 +71,6 @@ class System
     {
         __new(parent, type)
         {
-            this.Parent := parent
-            this.Type := type
-            this.CachedObjects := {}
-            return this
-        }
-
-        GetObjectByIndex(index, offset)
-        {
-            if !(this.CachedObjects.HasKey(index))
-                this.CachedObjects[index] := this.CreateObject(offset)
-            return this.CachedObjects[index]
-        }
-
-        CreateObject(offset)
-        {
-            if (this.Type[1].__Class == "System.List")
-                obj := new System.List(offset, offset, this.Parent, this.Type[2])
-            else if (this.Type[1].__Class == "System.DIctionary")
-                obj := new System.Dictionary(offset, offset, this.Parent, this.Type[2], this.Type[3])
-            else
-                obj := new this.Type(offset, offset, this.Parent)
-            return obj
-        }
-    }
-
-    class _Collection_WIP
-    {
-        __new(parent, type)
-        {
             this.ParentObj := parent
             this.Type := type
             this.CachedObjects := {}
@@ -148,7 +119,7 @@ class System
         }
     }
 
-    class _ItemCollection extends System._Collection_WIP
+    class _ItemCollection extends System._Collection
     {
         SetOffsetBaseAndStep()
         {
@@ -183,29 +154,17 @@ class System
             this.Items := new System._ItemCollection(this._items, itemType)
             return this 
         }
-        
-        ;Size()
-        ;{
-        ;    return this._size.GetValue()
-        ;}
-
-        ;GetItemOffset(index)
-        ;{
-        ;    return this.ItemOffsetBase + (index * this.ItemOffsetStep)
-        ;}
 
         Item[index]
         {
             get
             {
-                ;return this.NewChild(this._items, this.ItemType, this.GetItemOffset(index))
-                ;return this.Items.GetObjectByIndex(index, this.GetItemOffset(index))
                 return this.Items.GetObjectByIndex(index)
             }
         }
     }
 
-    class _DictionaryCollection extends System._Collection_WIP
+    class _DictionaryCollection extends System._Collection
     {
         GetIndexCount()
         {
@@ -275,47 +234,6 @@ class System
                 return this.Values.GetObjectByIndex(index)
             }
         }
-
-        ;GetKeyOffset(index)
-        ;{
-        ;    return this.KeyOffsetBase + (index * this.OffsetStep)
-        ;}
-
-        ;GetValueOffset(index)
-        ;{
-        ;    return this.ValueOffsetBase + (index * this.OffsetStep)
-        ;}
-        /*
-        GetIndexFromKey(key)
-        {
-            count := this.count.GetValue()
-            if !count
-                return -1
-            i := 0
-            loop %count%
-            {
-                if (key == this.Key[i].Value)
-                    return i
-                ++i
-            }
-            return -1
-        }
-
-        GetIndexFromValue(value)
-        {
-            count := this.count.GetValue()
-            if !count
-                return -1
-            i := 0
-            loop %count%
-            {
-                if (value == this.Value[i].Value)
-                    return i
-                ++i
-            }
-            return -1
-        }
-        */
     }
 
     class Generic extends System.Object
