@@ -864,35 +864,20 @@ Writes value to memory associated with the given memory object.
 
 <details><summary>Notable Extensions</summary><blockquote>
 
-- [_MemoryObjects](#_memoryobjects)
-    - [Uses](#uses)
-  - [Classes](#classes)
-    - [System._Collection](#system_collection)
-    - [System._DictionaryCollection](#system_dictionarycollection)
-    - [System._ItemCollection](#system_itemcollection)
-    - [System._KeyCollection](#system_keycollection)
-    - [System._ValueCollection](#system_valuecollection)
-    - [System.Boolean](#systemboolean)
-    - [System.Byte](#systembyte)
-    - [System.Dictionary](#systemdictionary)
-    - [System.Double](#systemdouble)
-    - [System.Enum](#systemenum)
-    - [System.Generic](#systemgeneric)
-    - [System.Int32](#systemint32)
-    - [System.Int64](#systemint64)
-    - [System.List](#systemlist)
-    - [System.Object](#systemobject)
-    - [System.Short](#systemshort)
-    - [System.Single](#systemsingle)
-    - [System.StaticBase](#systemstaticbase)
-    - [System.String](#systemstring)
-    - [System.UByte](#systemubyte)
-    - [System.UInt32](#systemuint32)
-    - [System.UInt64](#systemuint64)
-    - [System.USingle](#systemusingle)
-    - [System.UShort](#systemushort)
-    - [System.Value](#systemvalue)
-  - [The Memory Object Type](#the-memory-object-type)
+- [System.Byte](#systembyte)
+- [System.UByte](#systemubyte)
+- [System.Short](#systemshort)
+- [System.UShort](#systemushort)
+- [System.Int32](#systemint32)
+- [System.UInt32](#systemuint32)
+- [System.Int64](#systemint64)
+- [System.UInt64](#systemuint64)
+- [System.Single](#systemsingle)
+- [System.USingle](#systemusingle)
+- [System.Double](#systemdouble)
+- [System.Boolean](#systemboolean)
+- [System.Enum](#systemenum)
+
 </details></blockquote>
 <br>
 
@@ -912,7 +897,7 @@ When passing a parameter of 'The [Memory Object](#the-memory-object-type) type' 
 Examples:
 
 ```ahk
-Method(System.Int) ;Passes type associated with 32 bit unsigned integer
+Method(System.Int32) ;Passes type associated with 32 bit integer
 
 Method(System.String) ;Passes type associated with literal string
 
@@ -923,7 +908,7 @@ class ExampleMemoryObject extends System.Object
 
 Method(ExampleMemoryObject) ;Passes type defined as ExampleMemoryObject, a reference type.
 
-Method([System.List, System.Int]) ;Passes a list of 32 bit unsigned integers
+Method([System.List, System.Int32]) ;Passes a list of 32 bit integers
 
-Method([System.Dictionary, System.Int, [System.List, ExampleMemoryObject]]) ;Passes a Dictionary of 32 bit unsigned integer key and List of ExampleMemoryObject type value pairs.
+Method([System.Dictionary, System.Int, [System.List, ExampleMemoryObject]]) ;Passes a Dictionary of 32 bit integer key and List of ExampleMemoryObject type value pairs.
 ```
