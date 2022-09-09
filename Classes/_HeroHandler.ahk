@@ -3,7 +3,7 @@ class _HeroHandler
     __new(champID, setMaxLvl := false)
     {
         _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
-        _MemoryHandler.Refresh()
+        System.Refresh()
         heroes := _MemoryHandler.CreateOrGetHeroes()
         this.ChampID := champID
         this.hero := heroes.Item[champID - 1]

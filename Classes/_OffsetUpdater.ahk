@@ -1,10 +1,12 @@
 ;to be updated
 ;add handler for nullable types.
+;GENERAL REGEX NOTES
+;^ is for start of string. "^System" will look for System at the start of the string. "xSystem" would not match. "Systemx" would
 
 #include _ExceptionHandler.ahk
 #include json.ahk
 
-test := new UpdateMemoryStructures("Steam")
+test := new UpdateMemoryStructures()
 
 class UpdateMemoryStructures
 {
@@ -12,22 +14,8 @@ class UpdateMemoryStructures
     structureFiles := ["IdleGameManager.ahk", "ActiveEffectHandlers.ahk"]
     structurePath := "\..\Memory\Structures\"
 
-    __new(platform)
+    __new()
     {
-        this.StartTime := A_TickCount
-        if (platform == "Steam")
-        {
-            this.isSteam := true
-            this.exportFileName := "32-" . this.exportFileName
-        }
-        else if (platform == "EGS")
-        {
-            this.isSteam := false
-            this.exportFileName := "64-" . this.exportFileName
-        }
-        else
-            ExceptionHandler.ThrowFatalError("Parameter string must be 'Steam' or 'EGS'.`nInvalid Parameter: " . platform, -2)
-
         file := FileOpen(A_linefile . this.structurePath . this.exportFileName, "r")
         if !file
                 ExceptionHandler.ThrowFatalError("Could not find file.`nfile: " . this.exportFileName . "`nPath: " . A_linefile . this.structurePath, -2)
@@ -104,7 +92,7 @@ class UpdateMemoryStructures
     UpdateFieldLine(line, fields)
     {
         ;get field name
-        fieldNamePos := RegExMatch(line, "s)(?<=\s)\w*?(?= :=)", fieldName)
+        fieldNamePos := RegExMatch(line, "s)(?<=\s)\w*?(?= :=)", fieldName) ;looks between whitespace character (/s) and " :=" for zero, one, or more word characters (\w*?)
         if !(fields.HasKey(fieldName))
         {
             ;check if it is a backingfield
@@ -121,22 +109,24 @@ class UpdateMemoryStructures
             line := this.UpdateFieldType(line, type, fields[fieldName].type)
         }
         ;replace offset
-        if (this.isSteam)
-            line := RegExReplace(line, "s)(?<=\().*?(?=,)", fields[fieldName].offset)
-        else
-            line := RegExReplace(line, "s)(?<=, ).*?(?=, this)", fields[fieldName].offset)
+        ;if (this.isSteam)
+            line := RegExReplace(line, "s)(?<=\().*?(?=,)", fields[fieldName].offset) 
+        ;else
+        ;    line := RegExReplace(line, "s)(?<=, ).*?(?=, this)", fields[fieldName].offset)
         return line
     }
 
     ;need to update this for dictionary
+    ;structType is the type listed in the AHK structure, ie in IdleGameManager AHK class, not in the DLL
+    ;fieldtype is the type in the DLL
     UpdateFieldType(line, structType, fieldType)
     {
         ;update list types
-        if RegExMatch(fieldType, "^System.Collections.Generic.List")
+        if RegExMatch(fieldType, "^System.Collections.Generic.List") ;looks at the start of the line
         {
             ;updates declaration
             line := RegExReplace(line, structType, "System.List")
-            itemTypePos := RegExMatch(fieldType, "s)(?<=<).*?(?=>$)", itemType)
+            itemTypePos := RegExMatch(fieldType, "s)(?<=<).*?(?=>$)", itemType) ;looks for all between <>
             ;updates parameters
             line := RegExReplace(line, "s)(?<=this).*?(?=\))", this.UpdateCollectionType(itemType))
         }
@@ -182,6 +172,7 @@ class UpdateMemoryStructures
         return type
     }
 
+    ;don't think anything beyond here is used
     UpdateStructureFiles()
     {
         count := this.structureFiles.Count()

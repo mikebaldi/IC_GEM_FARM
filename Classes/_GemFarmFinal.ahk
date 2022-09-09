@@ -61,7 +61,7 @@ class _GemFarmFinal
         this.ServerCalls := new _ServerCalls
         g_Log.AddData("ServerCalls", this.ServerCalls)
 
-        _MemoryHandler.Refresh()
+        System.Refresh()
         this.IdleGameManager := _MemoryHandler.CreateOrGetIdleGameManager()
         this.GameInstance := _MemoryHandler.CreateOrGetGameInstance()
         this.ResetHandler := _MemoryHandler.CreateOrGetResetHandler()

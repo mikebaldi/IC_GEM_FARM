@@ -1,3 +1,9 @@
+v0.7.0 September 9, 2022
+
+    Memory Objects no longer handle both 32 and 64 bit offsets, only one or the other.
+    System Class has had memory read/write built in, as opposed to relying on Memory Handler class.
+    TreeView and Offset Updater classes have been revised.
+
 v0.6.1 Aug 2, 2022
 
     Fixed a bug in the method used to close the game.
