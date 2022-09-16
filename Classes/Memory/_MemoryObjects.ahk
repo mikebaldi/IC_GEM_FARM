@@ -131,6 +131,11 @@ class System
         {
             this.OffsetBase := 0x20 ;System.Memory.isTarget64bit ? 0x20 : 0x10
             this.OffsetStep := this.Type == System.Int32 ? 0x4 : 0x8 ;0x8 ;System.Memory.isTarget64bit ? 0x8 : 0x4
+            ;potential solution to lists of value types
+            ;if (this.Type.Type AND System.Memory.aTypeSize[this.Type.Type] <= 4)
+            ;    this.OffsetStep := 0x4
+            ;else
+            ;    this.OffsetStep := 0x8
         }
 
         GetIndexCount()

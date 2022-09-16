@@ -93,6 +93,7 @@ class UpdateMemoryStructures
     {
         ;get field name
         fieldNamePos := RegExMatch(line, "s)(?<=\s)\w*?(?= :=)", fieldName) ;looks between whitespace character (/s) and " :=" for zero, one, or more word characters (\w*?)
+        need code to handle override field name
         if !(fields.HasKey(fieldName))
         {
             ;check if it is a backingfield

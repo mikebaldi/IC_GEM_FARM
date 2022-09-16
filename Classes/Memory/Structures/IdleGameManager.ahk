@@ -85,7 +85,7 @@ class CrusadersGame
             ;FE
 
             ;to revisit when i want to figure out nullable type
-            isFixed_hasValue := new System.Boolean(0, this)
+            isFixed_hasValue := new System.Boolean(253, this)
             ;isFixed_hasValue_2byte := new System.Boolean(158, 0, this)
             ;isFixed_hasValue_3byte := new System.Boolean(159, 0, this)
         }
@@ -138,10 +138,18 @@ class CrusadersGame
         class UpgradeDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.UpgradeDef
+            baseEffectString := new System.String(0x28, this)
             SpecializationName := new System.String(64, this)
             RequiredLevel := new System.Int32(132, this)
             RequiredUpgradeID := new System.Int32(140, this)
+            typeUpgrade := new CrusadersGame.Defs.UpgradeDef.UpgradeType(0x78, this) ;OR-NAME:type
             ;FE
+
+            class UpgradeType extends System.Enum
+            {
+                Type := "System.Int32"
+                Enum := {0:"SelfDPS", 1:"GlobalDPS", 2:"UnlockUltimate", 3:"UnlockAbility", 4:"UpgradeAbility", 5:"GoldFind", 6:"Specialization", 7:"IncreaseHealth", 8:"Taunt", 9:"DamageReduction", 10:"None"}
+            }
         }
     }
 
