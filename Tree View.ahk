@@ -22,7 +22,7 @@ MyGUIGuiClose()
 
 global g_TV
 
-_MemoryHandler.Refresh()
+System.Refresh()
 GuiControl, -Redraw, TreeViewID
 objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new BrivSteelbonesHandler, new TimeScaleWhenNotAttackedhandler, new HavilarImpHandler, new OminContractualObligationsHandler, new NerdWagonHandler, new SentryEchoHandler ]
 g_TV := new TV_MemoryView(objArray*)
@@ -33,7 +33,7 @@ loop
 {
     ;Critical, On
     GuiControl, -Redraw, TreeViewID
-    _MemoryHandler.Refresh()
+    System.Refresh()
     itemID := TV_GetChild(0)
     while itemID
     {

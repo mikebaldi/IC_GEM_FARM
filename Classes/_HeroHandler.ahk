@@ -3,7 +3,7 @@ class _HeroHandler
     __new(champID, setMaxLvl := false)
     {
         _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
-        _MemoryHandler.Refresh()
+        System.Refresh()
         heroes := _MemoryHandler.CreateOrGetHeroes()
         this.ChampID := champID
         this.hero := heroes.Item[champID - 1]
@@ -22,7 +22,7 @@ class _HeroHandler
         if setMaxLvl
             this.SetMaxLvl()
         else
-            this.SetMaxLvlToLastSpec()
+            this.SetMaxLvlToSpecOrUlt()
         ;loads champion specific items for extended classes
         this.Init()
         return this
@@ -87,6 +87,16 @@ class _HeroHandler
         return
     }
 
+    SetMaxLvlToSpecOrUlt()
+    {
+        this.SetMaxLvlToLastSpec()
+        value := this.MaxLvl
+        this.SetMaxLvlToUltUnlock()
+        if (value > this.MaxLvl)
+            this.MaxLvl := value
+        return
+    }
+
     SetMaxLvlToLastSpec()
     {
         ;assuming active instance is always first entry, this may not be the case, may have to compare address of each key to gameinstance.Item[0]
@@ -110,6 +120,34 @@ class _HeroHandler
                 return
             }
             --index
+        }
+        upgrades._items.UseCachedAddress(false)
+        upgrades.UseCachedAddress(false)
+        upgrades := ""
+        this.MaxLvl := 9999
+        return
+    }
+
+    SetMaxLvlToUltUnlock()
+    {
+        ;assuming active instance is always first entry, this may not be the case, may have to compare address of each key to gameinstance.Item[0]
+        upgrades := this.hero.allUpgradesOrdered.Value[0]
+        ;assume address of upgrades list won't change during this look up.
+        upgrades.UseCachedAddress(true)
+        _size := upgrades._size.Value
+        ;assume _items won't change during this look up.
+        upgrades._items.UseCachedAddress(true)
+        loop, %_size%
+        {
+            typeUpgrade := upgrades.Item[A_Index - 1].typeUpgrade.Value
+            if (typeUpgrade == 2)
+            {
+                reqLvl := upgrades.Item[A_Index - 1].RequiredLevel.Value
+                upgrades._items.UseCachedAddress(false)
+                upgrades.UseCachedAddress(false)
+                this.MaxLvl := reqLvl
+                return
+            }
         }
         upgrades._items.UseCachedAddress(false)
         upgrades.UseCachedAddress(false)

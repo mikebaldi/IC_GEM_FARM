@@ -15,8 +15,10 @@ To Do List:
 
 Known Issues:
 
-- Missing our out of date EGS offsets
+- Lists of value types other than Int32 may not work correctly.
+- Docs are now out of date.
 - Methods to delete dictionary entries don't appear to work, need to better understand how object delete method works.
 - Script can get stuck in a modron reset in rare cases.
+- Offset updater is currently broken until solution for field name 'type' doesn't create conflicts between memory objects and memory structures.
 
 [Documentation](Docs/index.md)

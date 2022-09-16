@@ -1,10 +1,16 @@
 class System
 {
+    Refresh()
+    {
+        this.Memory := new _ClassMemory("ahk_exe IdleDragons.exe", "", hProcessCopy)
+        this.ModuleBaseAddress := this.Memory.getModuleBaseAddress("mono-2.0-bdwgc.dll")
+    }
+
     class Object
     {
-        __new(offset32, offset64, parentObj)
+        __new(offset, parentObj)
         {
-            this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
+            this.Offset := offset
             this.GetAddress := this.variableGetAddress
             this.ParentObj := parentObj
             this.CachedAddress := ""
@@ -14,7 +20,7 @@ class System
 
         variableGetAddress()
         {
-            return _MemoryHandler.ClassMemory.read(this.ParentObj.GetAddress() + this.Offset, _MemoryHandler.ClassMemory.ptrType)
+            return System.Memory.read(this.ParentObj.GetAddress() + this.Offset, System.Memory.ptrType)
         }
 
         ;to be deprecated
@@ -53,7 +59,7 @@ class System
         LogGetAddress(log)
         {
             parentAddress := this.ParentObj.LogGetAddress(log)
-            address := _MemoryHandler.ClassMemory.read(parentAddress + this.Offset, _MemoryHandler.ClassMemory.ptrType)
+            address := System.Memory.read(parentAddress + this.Offset, System.Memory.ptrType)
             log.AddDataSimple(parentAddress . "+" . this.Offset . "->" . address)
             if (address != this.CachedAddress)
             {
@@ -89,11 +95,11 @@ class System
         {
             offset := this.GetOffset(index)
             if (this.Type[1].__Class == "System.List")
-                obj := new System.List(offset, offset, this.ParentObj, this.Type[2])
+                obj := new System.List(offset, this.ParentObj, this.Type[2])
             else if (this.Type[1].__Class == "System.DIctionary")
-                obj := new System.Dictionary(offset, offset, this.ParentObj, this.Type[2], this.Type[3])
+                obj := new System.Dictionary(offset, this.ParentObj, this.Type[2], this.Type[3])
             else
-                obj := new this.Type(offset, offset, this.ParentObj)
+                obj := new this.Type(offset, this.ParentObj)
             return obj
         }
 
@@ -123,8 +129,13 @@ class System
     {
         SetOffsetBaseAndStep()
         {
-            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x20 : 0x10
-            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x8 : 0x4
+            this.OffsetBase := 0x20 ;System.Memory.isTarget64bit ? 0x20 : 0x10
+            this.OffsetStep := this.Type == System.Int32 ? 0x4 : 0x8 ;0x8 ;System.Memory.isTarget64bit ? 0x8 : 0x4
+            ;potential solution to lists of value types
+            ;if (this.Type.Type AND System.Memory.aTypeSize[this.Type.Type] <= 4)
+            ;    this.OffsetStep := 0x4
+            ;else
+            ;    this.OffsetStep := 0x8
         }
 
         GetIndexCount()
@@ -133,24 +144,17 @@ class System
         }
     }
 
-    ;item base is the memory class, and item type is the c# type
     class List extends System.Object
     {
-        __new(offset32, offset64, parentObject, itemType)
+        __new(offset, parentObject, itemType)
         {
-            this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
+            this.Offset := offset
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            ;not sure what this.List is used for
-            ;this.List := new System.Object(offset32, offset64, parentObject)
-            this._items := new System.Object(0x8, 0x10, this)
-            this._size := new System.Int32(0xC, 0x18, this)
-            ;this.ItemOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x20 : 0x10
-            ;this.ItemOffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x8 : 0x4
-            ;this.ItemType := itemType
+            this._items := new System.Object(0x10, this) ;32bit == 0x8
+            this._size := new System.Int32(0x18, this) ;32bit == 0xX
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
-            ;this.Items := new System._Collection(this._items, this.ItemType)
             this.Items := new System._ItemCollection(this._items, itemType)
             return this 
         }
@@ -176,8 +180,8 @@ class System
     {
         SetOffsetBaseAndStep()
         {
-            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x28 : 0x18
-            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
+            this.OffsetBase := 0x28 ;System.Memory.isTarget64bit ? 0x28 : 0x18
+            this.OffsetStep := 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
         }
     }
 
@@ -185,32 +189,23 @@ class System
     {
         SetOffsetBaseAndStep()
         {
-            this.OffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x30 : 0x1C
-            this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
+            this.OffsetBase := 0x30 ;System.Memory.isTarget64bit ? 0x30 : 0x1C
+            this.OffsetStep := 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
         }
     }
 
     class Dictionary extends System.Object
     {
-        __new(offset32, offset64, parentObject, keyType, valueType)
+        __new(offset, parentObject, keyType, valueType)
         {
-            this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
+            this.Offset := offset
             this.ParentObj := parentObject
             this.GetAddress := this.variableGetAddress
-            ;not sure what this is used for
-            ;this.Dict := new System.Object(offset32, offset64, parentObject)
-            this.entries := new System.Object(0xC, 0x10, this)
-            this.count := new System.Int32(0x20, 0x18, this)
-            ;this.KeyOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x28 : 0x18
-            ;this.ValueOffsetBase := _MemoryHandler.ClassMemory.isTarget64bit ? 0x30 : 0x1C
-            ;this.OffsetStep := _MemoryHandler.ClassMemory.isTarget64bit ? 0x18 : 0x10
-            ;this.KeyType := keyType
-            ;this.ValueType := valueType
+            this.entries := new System.Object(0x18, this)
+            this.count := new System.Int32(0x40, this) ;32bit == 0x20
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
-            ;this.Keys := new System._Collection(this.entries, this.KeyType)
             this.Keys := new System._KeyCollection(this.entries, keyType)
-            ;this.Values := new System._Collection(this.entries, this.ValueType)
             this.Values := new System._ValueCollection(this.entries, valueType)
             return this
         }
@@ -219,8 +214,6 @@ class System
         {
             get
             {
-                ;return this.NewChild(this.entries, this.KeyType, this.GetKeyOffset(index))
-                ;return this.Keys.GetObjectByIndex(index, this.GetKeyOffset(index))
                 return this.Keys.GetObjectByIndex(index)
             }
         }
@@ -229,8 +222,6 @@ class System
         {
             get
             {
-                ;return this.NewChild(this.entries, this.ValueType, this.GetValueOffset(index))
-                ;return this.Values.GetObjectByIndex(index, this.GetValueOffset(index))
                 return this.Values.GetObjectByIndex(index)
             }
         }
@@ -262,19 +253,19 @@ class System
     {
         GetValue()
         {
-            return _MemoryHandler.ClassMemory.read(this.ParentObj.GetAddress() + this.Offset, this.Type)
+            return System.Memory.read(this.ParentObj.GetAddress() + this.Offset, this.Type)
         }
 
         SetValue(value)
         {
-            return _MemoryHandler.ClassMemory.write(this.ParentObj.GetAddress() + this.Offset, value, this.Type)
+            return System.Memory.write(this.ParentObj.GetAddress() + this.Offset, value, this.Type)
         }
 
         LogGetValue()
         {
             this.Log.CreateEvent(this.LogDesc . ".Value.get")
             parentAddress := this.ParentObj.LogGetAddress(this.Log)
-            value := _MemoryHandler.ClassMemory.read(parentAddress + this.Offset, this.Type)
+            value := System.Memory.read(parentAddress + this.Offset, this.Type)
             this.Log.AddDataSimple(parentAddress . "+" . this.Offset . "->" . value)
             this.Log.LogStack()
             return value
@@ -284,7 +275,7 @@ class System
         {
             this.Log.CreateEvent(this.LogDesc . ".Value.set")
             parentAddress := this.ParentObj.LogGetAddress(this.Log)
-            retValue := _MemoryHandler.ClassMemory.write(parentAddress + this.Offset, value, this.Type)
+            retValue := System.Memory.write(parentAddress + this.Offset, value, this.Type)
             this.Log.AddDataSimple(parentAddress . "+" this.Offset ":=" value)
             if retValue
                 this.Log.AddDataSimple("retValue: " . retValue)
@@ -362,10 +353,10 @@ class System
 
     class Enum extends System.Value
     {
-        __new(offset32, offset64, parentObject)
+        __new(offset, parentObject)
         {
             this.isEnum := true ;this is hokey fix for tree view to differentiate enums from pointers, but I'm lazy right now.
-            this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
+            this.Offset := offset
             if !(System.valueTypeSize.HasKey(this.Type))
                 ExceptionHandler.ThrowError("Value type parameter is invalid.`nInvalid Parameter: " . this.Type, -2)
             this.Type := System.valueTypeSize[this.Type]
@@ -381,14 +372,13 @@ class System
 
     class String extends System.Generic
     {
-        __new(offset32, offset64, parentObj)
+        __new(offset, parentObj)
         {
-            this.Offset := _MemoryHandler.ClassMemory.isTarget64bit ? offset64 : offset32
+            this.Offset := offset
             this.GetAddress := this.variableGetAddress
             this.ParentObj := parentObj
-            this.Length := new System.Int32(0x8, 0x10, this)
-            ;this.Value := {}
-            this.stringOffset := _MemoryHandler.ClassMemory.isTarget64bit ? 0x14 : 0xC
+            this.Length := new System.Int32(0x10, this)
+            this.stringOffset := 0x14 ;System.Memory.isTarget64bit ? 0x14 : 0xC
             this.prevValue := ""
             this.CachedAddress := ""
             this.ConsecutiveReads := 0
@@ -398,7 +388,7 @@ class System
         GetValue()
         {
             baseAddress := this.GetAddress()
-            return _MemoryHandler.ClassMemory.readstring(baseAddress + this.stringOffset, 0, "UTF-16")
+            return System.Memory.readstring(baseAddress + this.stringOffset, 0, "UTF-16")
         }
 
         SetValue(value)
@@ -406,14 +396,14 @@ class System
             length := StrLen(value)
             this.Length.SetValue(length)
             baseAddress := this.GetAddress()
-            return _MemoryHandler.ClassMemory.writestring(baseAddress = this.stringOffset, value, "UTF-16")
+            return System.Memory.writestring(baseAddress = this.stringOffset, value, "UTF-16")
         }
 
         LogGetValue()
         {
             this.Log.CreateEvent(this.LogDesc . ".String.get")
             baseAddress := this.LogGetAddress(this.Log)
-            value := _MemoryHandler.ClassMemory.readstring(baseAddress + this.stringOffset, 0, "UTF-16")
+            value := System.Memory.readstring(baseAddress + this.stringOffset, 0, "UTF-16")
             this.Log.AddDataSimple(baseAddress . "+" . this.stringOffset . "->" . value)
             this.Log.LogStack()
             return value
@@ -425,7 +415,7 @@ class System
             length := StrLen(value)
             this.Length.LogSetValue(length)
             baseAddress := this.LogGetAddress(this.Log)
-            retValue := _MemoryHandler.ClassMemory.writestring(baseAddress = this.stringOffset, value, "UTF-16")
+            retValue := System.Memory.writestring(baseAddress = this.stringOffset, value, "UTF-16")
             this.Log.AddDataSimple(baseAddress . "+" this.stringOffset ":=" value)
             if retValue
                 this.Log.AddDataSimple("retValue: " . retValue)
@@ -457,15 +447,15 @@ class System
     {
         GetAddress()
         {
-            return _MemoryHandler.ClassMemory.read(_MemoryHandler.ModuleBaseAddress + this.Offset, _MemoryHandler.ClassMemory.ptrType)
+            return System.Memory.read(System.ModuleBaseAddress + this.Offset, System.Memory.ptrType)
         }
 
         LogGetAddress(log)
         {
             if this.useCachedAddress
                 return this.CachedAddress
-            parentAddress := _MemoryHandler.ModuleBaseAddress
-            address := _MemoryHandler.ClassMemory.read(parentAddress + this.Offset, _MemoryHandler.ClassMemory.ptrType)
+            parentAddress := System.ModuleBaseAddress
+            address := System.Memory.read(parentAddress + this.Offset, System.Memory.ptrType)
             log.AddDataSimple(parentAddress . "+" . this.Offset . "->" . address)
             if (address != this.CachedAddress)
             {     

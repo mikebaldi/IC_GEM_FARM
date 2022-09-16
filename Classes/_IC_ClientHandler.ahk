@@ -88,7 +88,7 @@ class _IC_ClientHandler extends _ClientHandler2
         loop
         {
             this.Open()
-            _MemoryHandler.Refresh()
+            System.Refresh()
             flag := this.IsAdventureRunning()
             if (flag == 1)
                 break

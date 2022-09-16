@@ -4,8 +4,8 @@ class BrivSteelbonesHandler extends ActiveEffectKeyHandler
     UpgradeID := 3450
     EffectID := 567
     ;FB-CrusadersGame.Effects.BrivSteelbonesHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(24, 48, this)
-    steelbonesStacks := new CrusadersGame.Effects.EffectStacks(28, 56, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    steelbonesStacks := new CrusadersGame.Effects.EffectStacks(56, this)
     ;FE
 }
 
@@ -15,15 +15,11 @@ class BrivUnnaturalHasteHandler extends ActiveEffectKeyHandler
     UpgradeID := 3452
     EffectID := 569
     ;FB-CrusadersGame.Effects.BrivUnnaturalHasteHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(24, 48, this)
-    sprintStacks := new CrusadersGame.Effects.EffectStacks(28, 56, this)
-    areaSkipChance := new System.Single(56, 104, this)
-    areaSkipAmount := new System.Int32(60, 108, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    sprintStacks := new CrusadersGame.Effects.EffectStacks(56, this)
+    areaSkipChance := new System.Single(104, this)
+    areaSkipAmount := new System.Int32(108, this)
     ;FE
-
-    ;to be revisited, this field apperas to be remoed from structure
-    ;stacksToConsume := new System.Int32(68, 116, this)
-    ;Failed to find field name in export file. fieldName: <stacksToConsume>k__Backingfield
 }
 
 class HavilarImpHandler extends ActiveEffectKeyHandler
@@ -32,11 +28,11 @@ class HavilarImpHandler extends ActiveEffectKeyHandler
     UpgradeID := 3431
     EffectID := 541
     ;FB-CrusadersGame.Effects.HavilarImpHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(24, 48, this)
-    activeImps := new System.List(56, 112, this, System.Int32)
-    currentOtherImpIndex := new System.Int32(296, 432, this)
-    summonImpUltimate := new CrusadersGame.Defs.AttackDef(92, 184, this)
-    sacrificeImpUltimate := new CrusadersGame.Defs.AttackDef(96, 192, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    activeImps := new System.List(112, this, System.Int32)
+    currentOtherImpIndex := new System.Int32(432, this)
+    summonImpUltimate := new CrusadersGame.Defs.AttackDef(184, this)
+    sacrificeImpUltimate := new CrusadersGame.Defs.AttackDef(192, this)
     ;FE
 }
 
@@ -46,9 +42,9 @@ class OminContractualObligationsHandler extends ActiveEffectKeyHandler
     UpgradeID := 4110
     EffectID := 649
     ;FB-CrusadersGame.Effects.OminContractualObligationsHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(28, 56, this)
-    numContractsFufilled := new System.Int32(60, 120, this)
-    secondsOnGoldFind := new System.Single(100, 156, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(56, this)
+    numContractsFufilled := new System.Int32(296, this)
+    secondsOnGoldFind := new System.Single(332, this)
     ;FE
 }
 
@@ -58,15 +54,15 @@ class NerdWagonHandler extends ActiveEffectKeyHandler
     UpgradeID := 6152
     EffectID := 921
     ;FB-CrusadersGame.Effects.NerdWagonHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(24, 48, this)
-    nerd0 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(36, 72, this)
-    nerd1 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(40, 80, this)
-    nerd2 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(44, 88, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    nerd0 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(72, this)
+    nerd1 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(80, this)
+    nerd2 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(88, this)
     ;FE
 
     class Nerd extends System.Object
     {
-        type := new NerdWagonHandler.NerdType(0x10, 0x20, this)
+        type := new NerdWagonHandler.NerdType(0x20, this)
     }
 
     class NerdType extends System.Enum
@@ -82,9 +78,9 @@ class SentryEchoHandler extends ActiveEffectKeyHandler
     UpgradeID := 3140
     EffectID := 488
     ;FB-CrusadersGame.Effects.SentryEchoHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(60, 0, this)
-    baseResolutionAmount := new System.Double(112, 0, this)
-    baseResolutionChance := new System.Double(120, 0, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(96, this)
+    baseResolutionAmount := new System.Double(192, this)
+    baseResolutionChance := new System.Double(200, this)
     ;FE
 }
 
@@ -94,9 +90,9 @@ class TimeScaleWhenNotAttackedHandler extends ActiveEffectKeyHandler
     UpgradeID := 2774
     EffectID := 432
     ;FB-TimeScaleWhenNotAttackedHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(24, 48, this)
-    scaleActive := new System.Boolean(224, 272, this)
-    effectTime := new System.Double(232, 280, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    scaleActive := new System.Boolean(272, this)
+    effectTime := new System.Double(280, this)
     ;FE
 }
 
@@ -187,6 +183,3 @@ class ActiveEffectKeyHandler_Parent extends System.Object
         return ""
     }
 }
-;Processing Time (minutes): 0.000000
-;Processing Time (minutes): 0.000000
-;Processing Time (minutes): 0.000000

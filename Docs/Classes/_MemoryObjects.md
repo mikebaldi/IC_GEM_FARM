@@ -461,7 +461,7 @@ Extends [System.Value](#systemvalue)
 <blockquote>
 <details><summary>Description</summary>
 
-Used as a base class for memory objects representing C# System.Collections.Generic.List types.
+Used as a base class for [Memory Object](#the-memory-object-type) representing C# System.Collections.Generic.List types.
 
 Extends [System.Object](#systemobject)
 </details>
@@ -477,13 +477,13 @@ Extends [System.Object](#systemobject)
 <details><summary>_size</summary>
 
 - Total number of items collected within the list.
-- Type: [System.Integer](#syteminteger)
+- Type: [System.Int32](#systemint32)
 </details>
 
 <details><summary>Items</summary>
 
 - Object used to handle the collection of items.
-- Type: [System._ItemCollection](#)
+- Type: [System._ItemCollection](#systemitemcollection)
 </details>
 </blockquote></details>
 
@@ -495,7 +495,7 @@ Extends [System.Object](#systemobject)
   - Parameters
     - index (integer): Index of desired item.
   - Returns
-    - Desired item memory object.
+    - Desired item [Memory Object](#the-memory-object-type).
 - Setter
   - None
 </details>
@@ -509,8 +509,8 @@ Creates a new instance of the class.
 - Parameters
     - offset32 (integer): 32 bit offset from parent object.
     - offset64 (integer 64bit): 64 bit offset from parent object.
-    - parentObj (memory object): Parent memory object.
-    - itemType (object):
+    - parentObj (memory object): Parent [Memory Object](#the-memory-object-type).
+    - itemType (The [Memory Object](#the-memory-object-type) type): The [Memory Object](#the-memory-object-type)type of the list items.
 
 - Returns
     - Instance of the class.
