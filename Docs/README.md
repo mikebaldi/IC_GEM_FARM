@@ -3,3 +3,13 @@
 ## Scripts
 
 [GemFarm_Final_Run.AHK](Scripts/GemFarm_Final_Run.md)
+
+## Files
+
+### _MemoryObjects.AHK
+<blockquote>
+<details><summary>Classes</summary>
+
+- [System](Classes/System.md)
+</details>
+</blockquote>

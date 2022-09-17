@@ -180,8 +180,9 @@ class System
     {
         SetOffsetBaseAndStep()
         {
-            this.OffsetBase := 0x28 ;System.Memory.isTarget64bit ? 0x28 : 0x18
-            this.OffsetStep := 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
+            ;this.OffsetBase := this.Type == System.Int32 ? 0x20 : 0x28 ;System.Memory.isTarget64bit ? 0x28 : 0x18
+            this.OffsetBase := 0x28
+            this.OffsetStep := this.Type == System.Int32 ? 0x10 : 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
         }
     }
 
@@ -189,8 +190,8 @@ class System
     {
         SetOffsetBaseAndStep()
         {
-            this.OffsetBase := 0x30 ;System.Memory.isTarget64bit ? 0x30 : 0x1C
-            this.OffsetStep := 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
+            this.OffsetBase := this.Type == System.Int32 ? 0x2C : 0x30 ;System.Memory.isTarget64bit ? 0x30 : 0x1C
+            this.OffsetStep := this.Type == System.Int32 ? 0x10 : 0x18 ;System.Memory.isTarget64bit ? 0x18 : 0x10
         }
     }
 

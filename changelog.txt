@@ -1,3 +1,7 @@
+v0.8.1 September 17, 2022
+
+    Revision to dictionary memory objects so that chest counts can be read accurately from memory.
+
 v0.8.0 September 16, 2022
 
     Updated hero handler with function that will set max level at ultimate unlock.
