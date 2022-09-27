@@ -1,3 +1,10 @@
+v0.9.0 September 27, 2022
+
+    Added a quad type memory object. Does not have write abilities and is in need of read optimization.
+    Omin Contractual Obligation handler has been updated to work with the new version.
+    Gem farm now checks if stuck on same level for over 60s.
+    Fixed some bugs with gem farm buying and opening chests not updating counters correctly and continously attempting to buy or open when it shouldn't.
+
 v0.8.1 September 17, 2022
 
     Revision to dictionary memory objects so that chest counts can be read accurately from memory.

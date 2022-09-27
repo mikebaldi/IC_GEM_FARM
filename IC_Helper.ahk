@@ -37,6 +37,7 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 System.Refresh()
 Funcs := _IC_FuncLibrary.CreateOrGetInstance()
 Briv := new _BrivHandler(58)
+Sentry := new _SentryHandler(52)
 QTHandler := new _QTHandler
 QTHandler.SetAreas()
 
@@ -45,8 +46,10 @@ loop
     System.Refresh()
     Funcs.SetTimeScale(10)
     Funcs.SetClickLevel(2000)
-    if (Briv.HasteStacks < 500)
-        Briv.HasteStacks := 5000
+    ;Funcs.BypassBossBag()
+    ;if (Briv.HasteStacks < 500)
+    ;    Briv.HasteStacks := 5000
     QTHandler.SetBackgrounds()
+    Sentry.SetOneKill()
     sleep, 100
 }

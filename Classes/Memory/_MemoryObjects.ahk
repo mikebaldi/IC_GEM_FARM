@@ -329,7 +329,7 @@ class System
 
     class UInt64 extends System.Value
     {
-        Type := "UInt64"
+        Type := "Int64"
     }
 
     class Single extends System.Value
@@ -345,11 +345,114 @@ class System
     class Double extends System.Value
     {
         Type := "Double"
+
+        ToString(value)
+        {
+            if (value == "0" OR value == "Infinity" OR value == "-Infinity" OR value == "NaN")
+                return value
+            else if (value > 100000)
+                return format("{:.2e}", value)
+            else
+                return value
+        }
     }
 
     class Boolean extends System.Value
     {
         Type := "Char"
+    }
+
+    class Quad extends System.Object
+    {
+        specialStringTable := ["0", "Infinity", "-Infinity", "NaN"]
+
+        __new(offset, parentObj)
+        {
+            this.Offset := offset
+            this.GetAddress := this.variableGetAddress
+            this.ParentObj := parentObj
+            this.SignificandBits := new System.UInt64(this.Offset, this.ParentObj)
+            this.Exponent := new System.Int64(this.Offset + 8, this.ParentObj)
+            this.Type := "Quad"
+            return this
+        }
+
+        GetValue()
+        {
+            significandBits := this.SignificandBits.Value
+            exponent := this.Exponent.Value
+            
+            if (exponent <= -9223372036854775805)
+            {
+                return this.specialStringTable[exponent - -9223372036854775808] ;to account for ahk array starting at 1, use long min + 1
+            }
+
+            ; the following is decompiled assembly c# dll converted to ahk. skipped over was the code for quad values that are in the range of double.
+            SetFormat, Float, 0.15 ;maximum significant figures, 15. default is 6.
+            string := ""
+            num := significandBits & -9223372036854775808 ;sets first bit to sign and clears remaining, ahk uses signed int64
+            num2 := (1086 - 61) << 52 ;moves exponent to next 11 bits, not sure why 1086 constant is needed. 61 is for the digits in significandBits
+            num3 := (significandBits & 9223372036854775807) >> 11 ;clear first bit, then move rest over 11 bits
+            num4 := num | num2 | num3 ;combine all to a single value
+            ;next three setps convert the int64 bits to double. need to look into memory clean up for myVar
+            VarSetCapacity(myVar, 8, 0) ;create a 64 bit variable
+            NumPut(num4, MyVar, 0, "Int64")
+            significandBitsDouble := NumGet(myVar,0,"Double") ;significandBits converted to a double
+
+            if (significandBitsDouble < 0.0)
+            {
+                string .= "-"
+                significandBitsDouble *= -1
+            }
+            exponent += 61 ;adding the digits from significandBits
+            exponent *= 0.3010299956639812 ;factor to convert from base 2 to base 10
+            exponentInt := floor(exponent)
+            exponentDec := exponent - exponentInt
+            significand := significandBitsDouble * (10**exponentDec)
+            ;make sure signifand is single digit decimal still
+            while (significand >= 10.0)
+            {
+                exponentInt++
+                significand /= 10.0
+            }
+            while (significand < 1.0)
+            {
+                exponentInt--
+                significand *= 10.0
+            }
+            significand := Round(significand, 3)
+            string .= significand . "e" . exponentInt
+            SetFormat, Float, 0.6
+            return string
+        }
+
+        ;essentially does what other getvalue method does, just with less code, but potentially less accurate. with just 2 digits they appear to be same.
+        GetValue2()
+        {
+            FirstEight := this.SignificandBits.Value
+            SecondEight := this.Exponent.Value
+
+            if (SecondEight <= -9223372036854775805)
+            {
+                return this.specialStringTable[SecondEight - -9223372036854775808] ;to account for ahk array starting at 1, use long min + 1
+            }
+            f := log( FirstEight + ( 2.0 ** 63 ) )
+            decimated := ( log( 2 ) * SecondEight ) + f
+            exponent := floor( decimated )
+            significand := round( 10 ** ( decimated - exponent ), 2 )
+            if(exponent < 4 AND exponent > -4)
+                return Round((FirstEight + (2.0**63)) * (2.0**SecondEight), 0) . ""
+
+            return significand . "e" . exponent
+        }
+
+        Value[]
+        {
+            get
+            {
+                return this.GetValue()
+            }
+        }
     }
 
     class Enum extends System.Value
@@ -440,7 +543,7 @@ class System
     static valueTypeSize :=     {   "System.Byte": "Char",     "System.UByte": "UChar"
                                 ,   "System.Short": "Short",   "System.UShort": "UShort"
                                 ,   "System.Int32": "Int",     "System.UInt32": "UInt"
-                                ,   "System.Int64": "Int64",   "System.UInt64": "UInt64"
+                                ,   "System.Int64": "Int64",   "System.UInt64": "Int64"
                                 ,   "System.Single": "Float",  "System.USingle": "UFloat"
                                 ,   "System.Double": "Double", "System.Boolean": "Char"}
 

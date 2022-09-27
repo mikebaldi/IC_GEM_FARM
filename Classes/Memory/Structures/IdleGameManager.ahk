@@ -225,6 +225,7 @@ class CrusadersGame
             highestAvailableAreaID := new System.Int32(144, this)
             gold := new System.Int64(600, this) ;OR-TYPE
             ;FE
+            goldQuad := new System.Quad(600, this)
         }
 
         class Area extends System.Object
@@ -602,6 +603,21 @@ class UnityGameEngine
             Hash := new System.String(32, this)
             Loaded := new System.Boolean(84, this)
             ID := new System.Int32(88, this)
+            ;FE
+        }
+    }
+
+    class Utilities
+    {
+        class SimpleTimer extends System.Object
+        {
+            ;FB-UnityGameEngine.Utilities.SimpleTimer
+            Name := new System.String(0x20, this)
+            tSeconds := new System.Int32(0x50, this)
+            Active := new System.Boolean(0x54, this)
+            timeScale := new System.Single(0x58, this)
+            duration := new System.Single(0x60, this)
+            pauseCount := new System.Int32(0x6C, this)
             ;FE
         }
     }

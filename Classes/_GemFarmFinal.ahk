@@ -38,7 +38,7 @@ class _GemFarmFinal
         get
         {
             value := this.ActiveCampaignData.CurrentZone.Value
-            if (value > this.CurrentZonePrev)
+            if (value > this.CurrentZonePrev OR value == 1)
             {
                 this.CurrentZonePrev := value
                 this.CurrentZonePrevTime := A_TickCount
@@ -188,12 +188,19 @@ class _GemFarmFinal
                 this.ModronReset()
 
             if (this.CurrentZone == 1)
-            {
                 this.DoZoneOne()
-                this.CurrentZonePrev := 1
-            }
+
             if (this.Client.IsOnWorldMap())
                 this.Client.ResetFromWorldMap()
+
+            if (A_TickCount - this.CurrentZonePrevTime > 60000)
+            {
+                this.Client.Close()
+                this.Client.OpenIC()
+                this.QTHandler.SetAreas()
+                this.CurrentZonePrevTime := A_TickCount
+            }
+
             this.Funcs.ToggleAutoProgress(1)
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
@@ -212,8 +219,12 @@ class _GemFarmFinal
         g_Log.AddData("gems", this.UserData.Gems.Value)
         g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
         g_Log.CreateEvent(A_ThisFunc)
+        if (this.Settings.SetTimeScale)
+            this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
         this.Funcs.WaitForFirstGold()
         this.Funcs.ToggleAutoProgress(0)
+        if (this.Settings.SetTimeScale)
+            this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
         this.Briv.LevelUp(170,, "q")
         this.Sentry.LevelUp(225,, "q")
         this.QTHandler.SetAreas()
@@ -340,8 +351,8 @@ class _GemFarmFinal
         gems := this.Chests.Gems - this.Settings[ "MinGemCount" ]
         g_Log.AddData("Start Gems", gems)
         restartTime := this.Settings.RestartStackTime
-        checkAgain := false
-        while (elapsedTime < restartTime)
+        checkAgain := true
+        while (elapsedTime < restartTime AND checkAgain)
         {
             if (this.Settings.BuySilvers AND gems > 5000 AND elapsedTime < (restartTime - purchaseTime))
             {
@@ -394,6 +405,7 @@ class _GemFarmFinal
                     }
                     else
                         checkAgain := false
+                    g_Log.AddData("Chest Counts", this.Chest.Counts)
                     g_Log.EndEvent()
                 }
                 elapsedTime := A_TickCount - startTime

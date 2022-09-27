@@ -42,9 +42,11 @@ class OminContractualObligationsHandler extends ActiveEffectKeyHandler
     UpgradeID := 4110
     EffectID := 649
     ;FB-CrusadersGame.Effects.OminContractualObligationsHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(56, this)
-    numContractsFufilled := new System.Int32(296, this)
-    secondsOnGoldFind := new System.Single(332, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
+    buffTimer := new UnityGameEngine.Utilities.SimpleTimer(0x78, this)
+    obligationsRequired := new System.Int32(0x8C, this)
+    obligationsFufilled := new System.Int32(0x90, this)
+    isGoldBuffApplied := new System.Boolean(0x98, this)
     ;FE
 }
 
