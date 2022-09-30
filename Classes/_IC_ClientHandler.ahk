@@ -6,21 +6,21 @@ class _IC_ClientHandler extends _ClientHandler2
 
     IsAdventureRunning()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         while (!(this.IdleGameManager.game.gameStarted.Value) AND elapsedTime < 60000)
         {
             if !(this.DoesWinExist())
             {
-                g_Log.AddData("Window Closed", true)
-                g_Log.EndEvent()
+                ;g_Log.AddData("Window Closed", true)
+                ;g_Log.EndEvent()
                 return -1
             }
             if (this.IsOnWorldMap())
             {
-                g_Log.AddData("IsOnWorldMap", true)
-                g_Log.EndEvent()
+                ;g_Log.AddData("IsOnWorldMap", true)
+                ;g_Log.EndEvent()
                 return -2
             }
             sleep, 100
@@ -28,7 +28,7 @@ class _IC_ClientHandler extends _ClientHandler2
         }
         if (elapsedTime > 60000)
         {
-            g_Log.EndEvent()
+            ;g_Log.EndEvent()
             return -3
         }
         startTime := A_TickCount
@@ -37,14 +37,14 @@ class _IC_ClientHandler extends _ClientHandler2
         {
             if !(this.DoesWinExist())
             {
-                g_Log.AddData("Window Closed", true)
-                g_Log.EndEvent()
+                ;g_Log.AddData("Window Closed", true)
+                ;g_Log.EndEvent()
                 return -1
             }
             if (this.IsOnWorldMap())
             {
-                g_Log.AddData("IsOnWorldMap", true)
-                g_Log.EndEvent()
+                ;g_Log.AddData("IsOnWorldMap", true)
+                ;g_Log.EndEvent()
                 return -2
             }
             sleep, 100
@@ -52,10 +52,10 @@ class _IC_ClientHandler extends _ClientHandler2
         }
         if (elapsedTime > 60000)
         {
-            g_Log.EndEvent()
+            ;g_Log.EndEvent()
             return -3
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return 1
     }
 
@@ -109,10 +109,10 @@ class _IC_ClientHandler extends _ClientHandler2
 
     ResetFromWorldMap()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         this.Close()
         response := this.ServerCalls.CallLoadAdventure(this.CurrentObjective)
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 

@@ -27,6 +27,7 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_ScriptDir%\Classes\_HeroHandler.ahk
 #Include %A_ScriptDir%\Classes\_BrivHandler.ahk
 #Include %A_ScriptDir%\Classes\_SentryHandler.ahk
+#Include %A_ScriptDir%\Classes\_HewHandler.ahk
 #Include %A_ScriptDir%\Classes\_ClientHandler.ahk
 #Include %A_ScriptDir%\Classes\_IC_ClientHandler.ahk
 #Include %A_ScriptDir%\Classes\_IC_FuncLibrary.ahk
@@ -38,6 +39,7 @@ System.Refresh()
 Funcs := _IC_FuncLibrary.CreateOrGetInstance()
 Briv := new _BrivHandler(58)
 Sentry := new _SentryHandler(52)
+Hew := new _HewHandler(75)
 QTHandler := new _QTHandler
 QTHandler.SetAreas()
 
@@ -46,10 +48,15 @@ loop
     System.Refresh()
     Funcs.SetTimeScale(10)
     Funcs.SetClickLevel(2000)
-    ;Funcs.BypassBossBag()
-    ;if (Briv.HasteStacks < 500)
-    ;    Briv.HasteStacks := 5000
+    Funcs.BypassBossBag()
+    if (Briv.HasteStacks < 500)
+        Briv.HasteStacks := 5000
     QTHandler.SetBackgrounds()
     Sentry.SetOneKill()
+    If (Hew.SetOneKill() == 1)
+    {
+        _VirtualKeyInputs.Priority("{Right}", "{w}")
+        _VirtualKeyInputs.Priority("{Right}", "{q}")
+    }
     sleep, 100
 }

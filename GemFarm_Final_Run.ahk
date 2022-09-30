@@ -20,17 +20,17 @@ CoordMode, Mouse, Client
 #include %A_ScriptDir%\Classes\_Utilities.ahk
 
 ;logging functions
-#include %A_ScriptDir%\Classes\_classLog.ahk
-global g_Log := new _classLog("Gem Farm")
+;#include %A_ScriptDir%\Classes\_classLog.ahk
+;global g_Log := new _classLog("Gem Farm")
 ;global g_LogMemory := new _classLog("Memory Log")
 
 #Include %A_ScriptDir%\Classes\_GemFarmFinal.ahk
 
 g_GemFarm := new _GemFarmFinal(_Utilities.LoadObjectFromJSON(A_LineFile . "\..\GemFarmFinal_Settings.json"))
-OnExit("GemFarmExitApp")
+;OnExit("GemFarmExitApp")
 g_GemFarm.GemFarm()
 
-GemFarmExitApp()
-{
-    g_Log.LogStack()
-}
+;GemFarmExitApp()
+;{
+;    g_Log.LogStack()
+;}

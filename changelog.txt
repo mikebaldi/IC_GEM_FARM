@@ -1,3 +1,9 @@
+v0.10.0 September 30, 2022
+
+    Removed all logging except for gem farm start up data. Will eventually bring back logging, but with a more focused purpose.
+    Refactored the Active Effect Handler class to look for handler in last place found instead of starting from scratch for each memory read.
+    Created a Hew Handler to force single kill. Requires swapping changing Hew's formation slot or bench and unbenching them after setting single kill, so Carefully Balanced is recalculated with new base amount.
+
 v0.9.0 September 27, 2022
 
     Added a quad type memory object. Does not have write abilities and is in need of read optimization.

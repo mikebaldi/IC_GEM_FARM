@@ -16,24 +16,34 @@ class _classLog
 
     stack := {}
 
-    __New(fileName)
+    __New()
     {
-        this.CreateLogFile(fileName)
+        ;this.CreateLogFile(fileName)
         ;this.CreateEvent(fileName)
         Return this
     }
 
-    CreateLogFile(fileName)
+    CreateLogFile(fileName, overwrite := true, dir := "")
     {
-        dir := A_ScriptDir . "\LOG"
+        if !dir
+            dir := A_ScriptDir . "\LOG"
         if !FileExist( dir )
             FileCreateDir, %dir%
-        this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_" . fileName . "_1.json"
-        i := 2
-        while ( FileExist( this.fileName ) )
+        if overwrite
         {
-            this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_" . fileName . "_" . i . ".json"
-            ++i
+            this.fileName := "LOG\" . fileName . ".json"
+            if FileExist(this.fileName)
+                FileDelete, % this.fileName
+        }
+        else
+        {
+            this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_" . fileName . "_1.json"
+            i := 2
+            while ( FileExist( this.fileName ) )
+            {
+                this.fileName := "LOG\" . A_YYYY . "_" . A_MM . A_DD . "_" . fileName . "_" . i . ".json"
+                ++i
+            }
         }
         FileAppend, [, % this.fileName
     }

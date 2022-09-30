@@ -35,7 +35,7 @@ class _HeroHandler
 
     LevelUp(Lvl := 0, timeout := 5000, keys*)
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         if !Lvl
             Lvl := this.MaxLvl
         startTime := A_TickCount
@@ -52,7 +52,7 @@ class _HeroHandler
             ElapsedTime := A_TickCount - StartTime
         }
         this.hero.UseCachedAddress(false)
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 

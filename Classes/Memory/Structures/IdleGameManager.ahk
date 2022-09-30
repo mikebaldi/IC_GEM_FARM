@@ -157,7 +157,7 @@ class CrusadersGame
     {
         class ActiveEffectKeyHandler extends System.Object
         {
-
+            effectKey := new CrusadersGame.Effects.EffectKey(0, this)
         }
 
 
@@ -190,10 +190,19 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.Effects.EffectKeyHandler
             parent := new CrusadersGame.Effects.Effect(16, this)
+            effectKeyParams := new CrusadersGame.Effects.EffectKeyParams(0x18, this)
             activeEffectHandlers := new System.List(304, this, CrusadersGame.Effects.ActiveEffectKeyHandler)
             ;FE
         }
 
+        class EffectKeyParams extends System.Object
+        {
+            ;FB-CrusadersGame.Effects.EffectKeyParams
+            cachedQuads := new System.Dictionary(0x18, this, System.String, System.Quad)
+            ;FE
+
+            ;data := new System.Dictionary(0x10, this, System.String, Object) have to figure out how to deal with object type, but for now this data doesn't look useful enough.
+        }
 
         class EffectStacks extends System.Object
         {

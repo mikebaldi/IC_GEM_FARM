@@ -54,7 +54,7 @@ class _MemoryLogHandler extends _Contained
                 if (value != this.prevValue)
                 {
                     this.prevValue := value
-                    g_Log.AddData(this.Name, value)
+                    ;g_Log.AddData(this.Name, value)
                 }
                 return value
             }
@@ -79,7 +79,7 @@ class _MemoryLogHandler extends _Contained
                 if (value != this.prevValue)
                 {
                     this.prevValue := value
-                    g_Log.AddData(this.Name, value . "->" . this.obj.Enum[value])
+                    ;g_Log.AddData(this.Name, value . "->" . this.obj.Enum[value])
                 }
                 return value
             }

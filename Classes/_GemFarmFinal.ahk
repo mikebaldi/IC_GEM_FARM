@@ -7,12 +7,14 @@ _VirtualKeyInputs.Init("ahk_exe IdleDragons.exe")
 #Include %A_LineFile%\..\_HeroHandler.ahk
 #Include %A_LineFile%\..\_BrivHandler.ahk
 #Include %A_LineFile%\..\_SentryHandler.ahk
+#Include %A_LineFile%\..\_HewHandler.ahk
 #Include %A_LineFile%\..\_ClientHandler.ahk
 #Include %A_LineFile%\..\_IC_ClientHandler.ahk
 #Include %A_LineFile%\..\_IC_FuncLibrary.ahk
 #Include %A_LineFile%\..\_ServerCalls.ahk
 #Include %A_LineFile%\..\_QTHandler.ahk
 #Include %A_LineFile%\..\_Contained.ahk
+#include %A_LineFile%\..\_classLog.ahk
 
 class _GemFarmFinal
 {
@@ -20,7 +22,7 @@ class _GemFarmFinal
     {
         If !IsObject(settings)
         {
-            g_Log.AddData("Failed to load settings", true)
+            ;g_Log.AddData("Failed to load settings", true)
             msgbox, Failed to Load Settings, exiting app.
             ExitApp
         }
@@ -49,7 +51,9 @@ class _GemFarmFinal
 
     GemFarm()
     {
-        g_Log.CreateEvent("Startup")
+        log := new _classLog
+        log.CreateLogFile("GemFarmFinal.Startup")
+        log.CreateEvent("Startup")
 
         while (Not WinExist( "ahk_exe IdleDragons.exe" ))
         {
@@ -59,7 +63,7 @@ class _GemFarmFinal
         }
 
         this.ServerCalls := new _ServerCalls
-        g_Log.AddData("ServerCalls", this.ServerCalls)
+        log.AddData("ServerCalls", this.ServerCalls)
 
         System.Refresh()
         this.IdleGameManager := _MemoryHandler.CreateOrGetIdleGameManager()
@@ -71,15 +75,15 @@ class _GemFarmFinal
         currentObjective := this.ActiveCampaignData.CurrentObjective.Value
         if (currentObjective)
             this.Client.CurrentObjective := currentObjective
-        g_Log.AddDataSimple("CurrentObjective: " . currentObjective)
+        log.AddDataSimple("CurrentObjective: " . currentObjective)
 
         this.ModronTargetArea := this.Funcs.GetModronTargetArea()
-        g_Log.AddDataSimple("ModronTargetArea: " . this.ModronTargetArea)
+        log.AddDataSimple("ModronTargetArea: " . this.ModronTargetArea)
 
         this.ClickLevel := this.ModronTargetArea + 20
         if (!(this.ClickLevel) OR this.ClickLevel == -1)
             this.ClickLevel := 2000
-        g_Log.AddDataSimple("ClickLevel: " . this.ClickLevel)
+        log.AddDataSimple("ClickLevel: " . this.ClickLevel)
 
         ;read in formations
         formationSaves := new _FormationSavesHandler
@@ -119,7 +123,13 @@ class _GemFarmFinal
                 this.useSentry := true
                 ;this.Formation.Formation[i].MaxLvl := 225
                 this.Sentry := new _SentryHandler(52)
-            } 
+            }
+            else if (this.Formation.Formation[i].ChampID == 75)
+            {
+                this.useHew := true
+                ;this.Formation.Formation[i].MaxLvl := 225
+                this.Hew := new _HewHandler(75)
+            }
             ;else if (this.Formation.Formation[i].ChampID == 91)
             ;    this.Formation.Formation[i].MaxLvl := 310
             ;else if (this.Formation.Formation[i].ChampID == 102)
@@ -133,8 +143,8 @@ class _GemFarmFinal
             }
             ++i
         }
-        g_Log.AddData("Formation Data", tempObj)
-        g_Log.AddData("Settings", this.Settings)
+        log.AddData("Formation Data", tempObj)
+        log.AddData("Settings", this.Settings)
         this.QTHandler := new _QTHandler
         tempObj := {}
         loop, 50
@@ -143,16 +153,16 @@ class _GemFarmFinal
             tempObj[A_Index].setBackground := this.QTHandler.List[A_Index].setBackground
             tempObj[A_Index].defaultID := this.QTHandler.List[A_Index].defaultID
         }
-        g_Log.AddData("QTHandler.List", tempObj)
+        log.AddData("QTHandler.List", tempObj)
         tempObj := ""
         ;adds start up to log file
-        g_Log.LogStack()
+        log.LogStack()
+        log.EndLog()
         ;start new log event
-        g_Log.CreateEvent("Gem Farm-Partial")
-        g_Log.AddData("gems", this.UserData.Gems.Value)
-        g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
+        ;g_Log.CreateEvent("Gem Farm-Partial")
+        ;g_Log.AddData("gems", this.UserData.Gems.Value)
+        ;g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
         this.Reloaded := false
-
 
         loop
         {
@@ -205,6 +215,11 @@ class _GemFarmFinal
             this.Funcs.BypassBossBag()
             this.Formation.LevelFormation()
             this.Sentry.SetOneKill()
+            if (this.Hew.SetOneKill() == 1)
+            {
+                _VirtualKeyInputs.Priority("{Right}", "{w}")
+                _VirtualKeyInputs.Priority("{Right}", "{q}")
+            }
             this.QTHandler.SetBackgrounds()
             ;let the script catch up
             sleep, 10
@@ -213,12 +228,12 @@ class _GemFarmFinal
 
     DoZoneOne()
     {
-        g_Log.LogStack()
+        ;g_Log.LogStack()
         this.RunCount += 1
-        g_Log.CreateEvent("Gem Run " . this.RunCount)
-        g_Log.AddData("gems", this.UserData.Gems.Value)
-        g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent("Gem Run " . this.RunCount)
+        ;g_Log.AddData("gems", this.UserData.Gems.Value)
+        ;g_Log.AddData("gemsSpent", this.UserData.GemsSpent.Value)
+        ;g_Log.CreateEvent(A_ThisFunc)
         if (this.Settings.SetTimeScale)
             this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
         this.Funcs.WaitForFirstGold()
@@ -226,7 +241,15 @@ class _GemFarmFinal
         if (this.Settings.SetTimeScale)
             this.Funcs.SetTimeScale(this.Settings.SetTimeScale)
         this.Briv.LevelUp(170,, "q")
-        this.Sentry.LevelUp(225,, "q")
+        if this.UseHew
+            this.Hew.LevelUp(200,, "q")
+        if (this.Hew.SetOneKill() == 1)
+        {
+            _VirtualKeyInputs.Priority("{Right}", "{w}")
+            _VirtualKeyInputs.Priority("{Right}", "{q}")
+        }
+        if this.UseSentry
+            this.Sentry.LevelUp(225,, "q")
         this.QTHandler.SetAreas()
         this.Funcs.FinishZone(30000, this.Formation, "q")
         this.Funcs.ToggleAutoProgress(1)
@@ -238,12 +261,12 @@ class _GemFarmFinal
             sleep, 100
             elapsedTime := A_TickCount - startTime
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
     }
     
     StackFarmSetup()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         _VirtualKeyInputs.Priority("w")
         this.Funcs.WaitForTransition("w")
         this.Funcs.ToggleAutoProgress(0)
@@ -256,14 +279,14 @@ class _GemFarmFinal
             sleep, 100
             elapsedTime := A_TickCount - startTime
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
     }
 
     RestartStack()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         currentZone := this.CurrentZone
-        g_Log.AddData("CurrentZone", currentZone)
+        ;g_Log.AddData("CurrentZone", currentZone)
         this.StackFarmSetup()
         this.UpdateChestData()
         this.Client.Close()
@@ -297,12 +320,12 @@ class _GemFarmFinal
         this.QTHandler.SetAreas()
         this.CurrentZonePrevTime := A_TickCount
         this.Funcs.ToggleAutoProgress(1)
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
     }
 
     ModronReset()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         while (this.ResetHandler.Resetting.Value == 1 AND this.CurrentZone != 1 AND elapsedTime < 60000)
@@ -313,35 +336,35 @@ class _GemFarmFinal
         ;stuck resetting, restarting client
         if (elapsedTime > 60000)
         {
-            g_Log.AddData("Stuck Resetting: elapsedTime", elapsedTime)
+            ;g_Log.AddData("Stuck Resetting: elapsedTime", elapsedTime)
             this.Client.Close()
             sleep, 250
             this.Client.OpenIC()
         }
         this.CurrentZonePrevTime := A_TickCount
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 
     UpdateChestData()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         this.Chests := {}
         this.Chests.Gems := this.UserData.Gems.Value
-        g_Log.AddData("gems", this.Chests.Gems)
+        ;g_Log.AddData("gems", this.Chests.Gems)
         this.Chests.Counts := {}
         for k, v in this.Settings.OpenChests.Chests
         {
             this.Chests.Counts[v] := this.UserData.ChestCount[v]
         }
-        g_Log.AddData("Counts", this.Chests.Counts)
-        g_Log.EndEvent()
+        ;g_Log.AddData("Counts", this.Chests.Counts)
+        ;g_Log.EndEvent()
         return
     }
 
     BuyOrOpenChests()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         var := ""
@@ -349,17 +372,17 @@ class _GemFarmFinal
         openChestTimeEst := 7000 ; 7s
         purchaseTime := 100 ; .1s
         gems := this.Chests.Gems - this.Settings[ "MinGemCount" ]
-        g_Log.AddData("Start Gems", gems)
+        ;g_Log.AddData("Start Gems", gems)
         restartTime := this.Settings.RestartStackTime
         checkAgain := true
         while (elapsedTime < restartTime AND checkAgain)
         {
             if (this.Settings.BuySilvers AND gems > 5000 AND elapsedTime < (restartTime - purchaseTime))
             {
-                g_Log.CreateEvent("BuySilvers")
+                ;g_Log.CreateEvent("BuySilvers")
                 response := this.ServerCalls.callBuyChests(1, 100)
-                if response
-                    g_Log.AddData("response", response)
+                ;if response
+                    ;g_Log.AddData("response", response)
                 if(response.okay AND response.success)
                 {
                     gems := response.currency_remaining - this.Settings[ "MinGemCount" ]
@@ -369,15 +392,15 @@ class _GemFarmFinal
                 }
                 else
                     checkAgain := false
-                g_Log.EndEvent()
+                ;g_Log.EndEvent()
             }
             elapsedTime := A_TickCount - startTime
             if (this.Settings.BuyGolds AND gems > 50000 AND elapsedTime < (restartTime - purchaseTime))
             {
-                g_Log.CreateEvent("BuyGolds")
+                ;g_Log.CreateEvent("BuyGolds")
                 response := this.ServerCalls.callBuyChests(2, 100)
-                if response
-                    g_Log.AddData("response", response)
+                ;if response
+                    ;g_Log.AddData("response", response)
                 if(response.okay AND response.success)
                 {
                     gems := response.currency_remaining - this.Settings[ "MinGemCount" ]
@@ -387,17 +410,17 @@ class _GemFarmFinal
                 }
                 else
                     checkAgain := false
-                g_Log.EndEvent()
+                ;g_Log.EndEvent()
             }
             elapsedTime := A_TickCount - startTime
             for k, v in this.Chests.Counts
             {
                 if (v > 98 AND elapsedTime < (restartTime - openChestTimeEst))
                 {
-                    g_Log.CreateEvent("OpenChestID" . k)
+                    ;g_Log.CreateEvent("OpenChestID" . k)
                     response := this.ServerCalls.callOpenChests(k, 99)
-                    if response
-                        g_Log.AddData("response", response)
+                    ;if response
+                        ;g_Log.AddData("response", response)
                     if(response.success)
                     {
                         v := response.chests_remaining
@@ -405,13 +428,13 @@ class _GemFarmFinal
                     }
                     else
                         checkAgain := false
-                    g_Log.AddData("Chest Counts", this.Chest.Counts)
-                    g_Log.EndEvent()
+                    ;g_Log.AddData("Chest Counts", this.Chest.Counts)
+                    ;g_Log.EndEvent()
                 }
                 elapsedTime := A_TickCount - startTime
             }
         }
         this.CurrentZonePrevTime := A_TickCount
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
     }
 }

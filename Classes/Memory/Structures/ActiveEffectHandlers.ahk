@@ -36,6 +36,19 @@ class HavilarImpHandler extends ActiveEffectKeyHandler
     ;FE
 }
 
+class HewMaanTeamworkHandler extends ActiveEffectKeyHandler
+{
+    ChampID := 75
+    UpgradeID := 4829
+    EffectID := 763
+    ;FB-CrusadersGame.Effects.HewMaanTeamworkHandler
+    teamworkEffectKey := new CrusadersGame.Effects.EffectKey(0x30, this)
+    carefullyBalancedEffectKey := new CrusadersGame.Effects.EffectKey(0x98, this)
+    ;FE
+
+    effectKey := this.teamworkEffectKey
+}
+
 class OminContractualObligationsHandler extends ActiveEffectKeyHandler
 {
     ChampID := 65
@@ -104,84 +117,84 @@ class ActiveEffectKeyHandler extends System.Object
     {
         this.Offset := 0
         this.GetAddress := this.variableGetAddress
-        this.ParentObj := new ActiveEffectKeyHandler_Parent(_MemoryHandler.CreateOrGetHeroes(), this.ChampID, this.UpgradeID, this.EffectID, this)
         this.CachedAddress := ""
-        this.ConsecutiveReads := 0
-        return this
-    }
-    
-    UseCachedAddress(setStatic, address)
-    {
-        if setStatic
-        {
-            this.CachedAddress := address
-            this.GetAddress := this.staticGetAddress
-        }
-        else
-            this.GetAddress := this.variableGetAddress
-    }
-}
-
-class ActiveEffectKeyHandler_Parent extends System.Object
-{
-    __new(heroes, champID, upgradeID, effectID, child)
-    {
-        this.Hero := heroes.Item[champID - 1]
-        this.UpgradeID := upgradeID
-        this.EffectID := effectID
-        this.Child := child
-        this.GetAddress := this.variableGetAddress
-        ;need to update this eventually
-        this.LogGetAddress := this.variableGetAddress
+        heroes := _MemoryHandler.CreateOrGetHeroes()
+        this.Hero := heroes.Item[this.ChampID - 1]
+        this.effectKeysByKeyName := this.Hero.effects.effectKeysByKeyName
+        this.effectKeysByKeyNameIndex := -1
+        this.effectKeysIndex := -1
+        this.activeEffectHandlersIndex := -1
         return this
     }
 
     variableGetAddress()
     {
-        ;will read hero's address once then reuse that address for subsequent reads. this should probably be applied at each loop.
         this.Hero.UseCachedAddress(true)
-        ;effectKeysByKeyName is Dict<string,List<CrusadersGame.Effects.EffectKey>>
-        effectKeysByKeyName := this.Hero.effects.effectKeysByKeyName
-        count := effectKeysByKeyname.count.GetValue()
-        index := 0
-        loop %count%
+        if (this.activeEffectHandlersIndex < 0 OR this.activeEffectHandler.effectKey.Offset == 0 OR this.activeEffectHandler.effectKey.parentEffectKeyHandler.parent.def.ID.Value != this.EffectID)
         {
-            ;effectKeys is a list of EffectKey
-            effectKeys := effectKeysByKeyName.Value[index]
-            EK_size := effectKeys._size.Value ;.Size()
-            EK_index := 0
-            loop %EK_size%
+            activeEffectHandlers := this.GetActiveEffectHandlersList()
+            _size := activeEffectHandlers._size.Value
+            this.activeEffectHandlersIndex := 0
+            loop %_size%
             {
-                parentEffectKeyHandler := effectKeys.Item[EK_index].parentEffectKeyHandler
-                if (parentEffectKeyHandler.parent.def.ID := this.EffectID)
+                this.activeEffectHandler := activeEffectHandlers.Item[this.activeEffectHandlersIndex]
+                this.activeEffectHandler.effectKey.Offset := this.effectKey.Offset
+                if (this.activeEffectHandler.effectKey.parentEffectKeyHandler.parent.def.ID.Value == this.EffectID)
                 {
-                    ;activeEffecthandlers is list of CrusadersGame.Effects.ActiveEffectKeyHandler
-                    ;these are the base type of our desired handlers, usually.
-                    activeEffectHandlers := parentEffectKeyHandler.activeEffectHandlers
-                    AEH_size := activeEffectHandlers._size.Value ;.Size()
-                    AEH_index := 0
-                    loop %AEH_size%
-                    {
-                        ;this effect key isnt in active effect handlers need to pass in effect handler to get these
-                        activeEffectHandler := activeEffectHandlers.Item[AEH_index]
-                        activeEffectHandlerAddress := activeEffectHandler.GetAddress()
-                        this.Child.UseCachedAddress(true, activeEffectHandlerAddress)
-                        id := this.Child.effectKey.parentEffectKeyHandler.parent.def.ID.GetValue()
-                        if (id == this.EffectID)
-                        {
-                            this.Hero.UseCachedAddress(false)
-                            this.Child.Offset := activeEffectHandler.Offset
-                            this.Child.UseCachedAddress(false, 0)
-                            return activeEffectHandlers._items.GetAddress()
-                        }
-                        ++AEH_index
-                    }
+                    this.Offset := this.activeEffectHandler.Offset
+                    address := this.activeEffectHandler.GetAddress()
+                    this.Hero.UseCachedAddress(false)
+                    return address
                 }
-                ++EK_index
+                this.activeEffectHandlersIndex += 1
             }
-            ++index
+        }
+        else if (this.activeEffectHandler.effectKey.parentEffectKeyHandler.parent.def.ID.Value == this.EffectID)
+        {
+            address := this.activeEffectHandler.GetAddress()
+            this.Hero.UseCachedAddress(false)
+            return address
         }
         this.Hero.UseCachedAddress(false)
+        this.activeEffectHandlersIndex := -1
+        return ""
+    }
+
+    GetActiveEffectHandlersList()
+    {
+        this.Hero.UseCachedAddress(true)
+        if (this.effectKeysByKeyNameIndex < 0 OR this.effectKeysIndex < 0 OR this.parentEffectKeyHandler.parent.def.ID.Value != this.EffectID)
+        {
+            count := this.effectKeysByKeyName.count.Value
+            this.effectKeysByKeyNameIndex := 0
+            loop %count%
+            {
+                ;effectKeys is a list of EffectKey
+                effectKeys := this.effectKeysByKeyName.Value[this.effectKeysByKeyNameIndex]
+                EK_size := effectKeys._size.Value ;.Size()
+                this.EffectKeysIndex := 0
+                loop %EK_size%
+                {
+                    this.parentEffectKeyHandler := effectKeys.Item[this.EffectKeysIndex].parentEffectKeyHandler
+                    if (this.parentEffectKeyHandler.parent.def.ID.Value == this.EffectID)
+                    {
+                        this.ParentObj := this.parentEffectKeyHandler.activeEffectHandlers._items
+                        this.Hero.UseCachedAddress(false)
+                        return this.parentEffectKeyHandler.activeEffectHandlers
+                    }
+                    this.EffectKeysIndex += 1
+                }
+                this.effectKeysByKeyNameIndex += 1
+            }
+        }
+        else if (this.parentEffectKeyHandler.parent.def.ID.Value == this.EffectID)
+        {
+            this.Hero.UseCachedAddress(false)
+            return this.parentEffectKeyHandler.activeEffectHandlers
+        }
+        this.Hero.UseCachedAddress(false)
+        this.effectKeysByKeyNameIndex := -1
+        this.EffectKeysIndex := -1
         return ""
     }
 }

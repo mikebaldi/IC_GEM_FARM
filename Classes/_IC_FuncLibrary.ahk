@@ -23,7 +23,7 @@ class _IC_FuncLibrary extends _Contained
     {
         if mod(this.ActiveCampaignData.CurrentZone.Value, 5)
             return false
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         while (!mod(this.ActiveCampaignData.CurrentZone.Value, 5) AND ElapsedTime < maxLoopTime)
@@ -33,7 +33,7 @@ class _IC_FuncLibrary extends _Contained
             ElapsedTime := A_TickCount - StartTime
         }
         this.WaitForTransition(spam)
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return true
     }
 
@@ -41,7 +41,7 @@ class _IC_FuncLibrary extends _Contained
     ; waitTime: max time in ms will wait to finish zone, lvlFormation: bool to call method, inputs: variadic param of inputs
     FinishZone(waitTime, lvlFormation, inputs*)
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         startTime := A_TickCount
         elapsedTime := 0
         while (elapsedTime < waitTime AND this.ActiveCampaignData.QuestRemaining.Value > 0)
@@ -51,18 +51,18 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             elapsedTime := A_TickCount - startTime
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 
     GetModronTargetArea()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         offlineHandlerTA := -1
         userDataTA := -1
         offlineHandlerTA := this.GameInstance.offlineProgressHandler.modronSave.targetArea.Value
-        if (!offlineHandlerTA)
-            g_Log.AddDataSimple("offlineHandlerTA read failed")
+        ;if (!offlineHandlerTA)
+            ;g_Log.AddDataSimple("offlineHandlerTA read failed")
         modronHandler := this.GameInstance.Controller.userData.ModronHandler
         modronHandler.UseCachedAddress(true)
         _size := modronHandler.modronSaves._size.Value
@@ -74,21 +74,21 @@ class _IC_FuncLibrary extends _Contained
                 userDataTA := item.targetArea.Value
             index++
         }
-        if (!userDataTA)
-            g_Log.AddDataSimple("userDataTA read failed")
-        if (offlineHandlerTA != userDataTA)
-            g_Log.AddDataSimple("userDataTA: " . userDataTA . ", offlineHandlerTA: " . offlineHandlerTA)
-        g_Log.EndEvent()
+        ;if (!userDataTA)
+            ;g_Log.AddDataSimple("userDataTA read failed")
+        ;if (offlineHandlerTA != userDataTA)
+            ;g_Log.AddDataSimple("userDataTA: " . userDataTA . ", offlineHandlerTA: " . offlineHandlerTA)
+        ;g_Log.EndEvent()
         return offlineHandlerTA
     }
 
     IsCurrentFormation(formation)
     {
-        g_Log.CreateEvent(A_ThisFunc)
-        g_Log.AddData("formation", formation)
+        ;g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.AddData("formation", formation)
         if(!IsObject(formation))
         {
-            g_Log.EndEvent()
+            ;g_Log.EndEvent()
             return false
         }
         match := true
@@ -96,7 +96,7 @@ class _IC_FuncLibrary extends _Contained
         loop, % formation.Count()
         {
             heroID := this.GameInstance.Controller.formation.slots.Item[A_Index - 1].hero.def.ID.Value
-            g_Log.AddData("heroID", heroID)
+            ;g_Log.AddData("heroID", heroID)
             if (formation[A_index] == -1 AND !heroID)
             {
                 match := false
@@ -109,8 +109,8 @@ class _IC_FuncLibrary extends _Contained
             }
         }
         this.GameInstance.Controller.formation.slots.UseCachedAddress(false)
-        g_Log.AddData("match", match)
-        g_Log.EndEvent()
+        ;g_Log.AddData("match", match)
+        ;g_Log.EndEvent()
         return match
     }
 
@@ -141,7 +141,7 @@ class _IC_FuncLibrary extends _Contained
 
     WaitForFirstGold( maxLoopTime := 30000 )
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         _VirtualKeyInputs.Priority("q")
@@ -151,7 +151,7 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             ElapsedTime := A_TickCount - StartTime
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return ElapsedTime
     }
 
@@ -159,7 +159,7 @@ class _IC_FuncLibrary extends _Contained
     {
         if !(this.AreaTransitioner.IsTransitioning.Value)
             return
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         StartTime := A_TickCount
         ElapsedTime := 0
         while (this.AreaTransitioner.IsTransitioning.Value == 1 and ElapsedTime < maxLoopTime)
@@ -168,7 +168,7 @@ class _IC_FuncLibrary extends _Contained
             sleep, % this.SleepMS
             ElapsedTime := A_TickCount - StartTime
         }
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 }

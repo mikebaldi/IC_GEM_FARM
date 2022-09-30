@@ -13,13 +13,13 @@ class _ClientHandler2
 
     Close()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         if WinExist(this.WinTitle)
             SendMessage, 0x112, 0xF060,,, % this.WinTitle,,,, 10000 ; WinClose
         WinWaitClose, % this.WinTitle,, 10
         while WinExist(this.WinTitle)
             WinKill
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 
@@ -37,7 +37,7 @@ class _ClientHandler2
 
     Open()
     {
-        g_Log.CreateEvent(A_ThisFunc)
+        ;g_Log.CreateEvent(A_ThisFunc)
         this.PID := 0
         this.HWD := 0
         attempts := 0
@@ -48,13 +48,13 @@ class _ClientHandler2
             WinWait, % "ahk_pid " . this.PID,,32000
             if ErrorLevel
             {
-                g_Log.AddData("attempts", ++attempts)
+                ;g_Log.AddData("attempts", ++attempts)
                 Process, Close, % this.PID
                 this.PID := 0
             }
         }
         this.HWD := WinExist(this.WinTitle)
-        g_Log.EndEvent()
+        ;g_Log.EndEvent()
         return
     }
 }
