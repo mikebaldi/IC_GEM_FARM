@@ -8,6 +8,7 @@ class _IC_FuncLibrary extends _Contained
         this.AreaTransitioner := _MemoryHandler.CreateOrGetAreaTransitioner()
         this.ResetHandler := _MemoryHandler.CreateOrGetResetHandler()
         this.TopBar := _MemoryHandler.CreateOrGetTopBar()
+        this.ModronHandler := this.GameInstance.Controller.userData.ModronHandler
         this.SleepMS := 100
         return this
     }
@@ -55,7 +56,39 @@ class _IC_FuncLibrary extends _Contained
         return
     }
 
-    GetModronTargetArea()
+    ModronSaveObj[]
+    {
+        get
+        {
+            this.ModronHandler.UseCachedAddress(true)
+            if (this.cachedModronSaveObj.InstanceID.Value != 1)
+            {
+                _size := this.ModronHandler.modronSaves._size.Value
+                index := 0
+                loop, %_size%
+                {
+                    this.cachedModronSaveObj := this.ModronHandler.modronSaves.Item[index]
+                    if (this.cachedModronSaveObj.InstanceID.Value == 1)
+                        break
+                    index++
+                }
+            }
+            this.ModronHandler.UseCachedAddress(false)
+            return this.cachedModronSaveObj
+        }
+    }
+
+    SetModronTargetArea(value)
+    {
+        return this.ModronSaveObj.targetArea.Value := value
+    }
+
+    GetModrtonTargetArea()
+    {
+        return this.ModronSaveObj.targetArea.Value
+    }
+
+    GetModronTargetAreaOLD()
     {
         ;g_Log.CreateEvent(A_ThisFunc)
         offlineHandlerTA := -1
@@ -64,7 +97,7 @@ class _IC_FuncLibrary extends _Contained
         ;if (!offlineHandlerTA)
             ;g_Log.AddDataSimple("offlineHandlerTA read failed")
         modronHandler := this.GameInstance.Controller.userData.ModronHandler
-        modronHandler.UseCachedAddress(true)
+        ;modronHandler.UseCachedAddress(true)
         _size := modronHandler.modronSaves._size.Value
         index := 0
         loop, %_size%

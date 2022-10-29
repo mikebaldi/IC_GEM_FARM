@@ -22,19 +22,6 @@ class BrivUnnaturalHasteHandler extends ActiveEffectKeyHandler
     ;FE
 }
 
-class HavilarImpHandler extends ActiveEffectKeyHandler
-{
-    ChampID := 56
-    UpgradeID := 3431
-    EffectID := 541
-    ;FB-CrusadersGame.Effects.HavilarImpHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    activeImps := new System.List(112, this, System.Int32)
-    currentOtherImpIndex := new System.Int32(432, this)
-    summonImpUltimate := new CrusadersGame.Defs.AttackDef(184, this)
-    sacrificeImpUltimate := new CrusadersGame.Defs.AttackDef(192, this)
-    ;FE
-}
 
 class HewMaanTeamworkHandler extends ActiveEffectKeyHandler
 {

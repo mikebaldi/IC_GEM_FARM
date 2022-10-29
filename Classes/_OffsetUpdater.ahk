@@ -93,14 +93,27 @@ class UpdateMemoryStructures
     {
         ;get field name
         fieldNamePos := RegExMatch(line, "s)(?<=\s)\w*?(?= :=)", fieldName) ;looks between whitespace character (/s) and " :=" for zero, one, or more word characters (\w*?)
-        need code to handle override field name
+        ; maybe need code to handle override field name
         if !(fields.HasKey(fieldName))
         {
-            ;check if it is a backingfield
-            fieldName := "<" . fieldName . ">k__Backingfield"
+            ;check if override
+            stringOR := "OR-NAME:"
+            overridePos := InStr(line, stringOR)
+            if overridePos
+            {
+                startingPos := overridePos + StrLen(stringOR)
+                length := StrLen(line) - startingPos
+                fieldName := SubStr(line, startingPos, length)
+            } 
+
             if !(fields.HasKey(fieldName))
             {
-                return line . " `;Failed to find field name in export file. fieldName: " . fieldName
+                ;check if it is a backingfield
+                fieldName := "<" . fieldName . ">k__Backingfield"
+                if !(fields.HasKey(fieldName))
+                {
+                    return line . " `;Failed to find field name in export file. fieldName: " . fieldName
+                }
             }
         }
         ;replace type
