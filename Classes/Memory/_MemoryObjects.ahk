@@ -96,7 +96,7 @@ class System
             offset := this.GetOffset(index)
             if (this.Type[1].__Class == "System.List")
                 obj := new System.List(offset, this.ParentObj, this.Type[2])
-            else if (this.Type[1].__Class == "System.DIctionary")
+            else if (this.Type[1].__Class == "System.Dictionary")
                 obj := new System.Dictionary(offset, this.ParentObj, this.Type[2], this.Type[3])
             else
                 obj := new this.Type(offset, this.ParentObj)
@@ -374,6 +374,14 @@ class System
     class Boolean extends System.Value
     {
         static Type := "Char"
+    }
+
+    class Struct
+    {
+        class Int32 extends System.Object
+        {
+            m_value := new System.Int32(0x10, this)
+        }
     }
 
     class Quad extends System.Object

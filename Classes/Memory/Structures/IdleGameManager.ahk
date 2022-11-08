@@ -33,6 +33,7 @@ class CrusadersGame
         ;FB-CrusadersGame.ChampionsGameInstance
         Screen := new CrusadersGame.GameScreen.CrusadersGameScreen(16, this)
         Controller := new CrusadersGame.GameScreen.CrusadersGameController(24, this)
+        ;OfflineHandler := new CrusadersGame.GameScreen.OfflineProgressHandlerV2(0x20, this)
         ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(32, this)
         HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(40, this)
         ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(56, this)
@@ -50,7 +51,8 @@ class CrusadersGame
         class GameInstanceMode extends System.Enum
         {
             Type := "System.Int32"
-            Enum := {0:"Foreground", 1:"CatchUp", 2:"OfflineProgress", 3:"BackgroundProgress"}
+            ;Enum := {0:"Foreground", 1:"OfflineProgress", 2:"BackgroundProgress"}
+            Enum := {0:"Foreground", 1:"CatchUp", 2:"OfflineProgress", 3:"BackgroundProgress"} ; pre v476
         }
 
         class InstanceState extends System.Enum
@@ -72,6 +74,8 @@ class CrusadersGame
         class AttackDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.AttackDef
+            ID := new System.Int32(0x10, this)
+            Name := new System.String(0x18, this)
             CooldownTimer := new System.Single(176, this)
             ;FE
         }
@@ -79,6 +83,11 @@ class CrusadersGame
         class AreaDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.AreaDef
+            Monsters := new System.List(0x20, this, System.Int32)
+            Bosses := new System.List(0x28, this, [System.List, System.Int32])
+            MonsterSpawners := new System.Dictionary(0x30, this, System.String, [System.Dictionary, System.String, System.String])
+            MonsterGenerators := new System.Dictionary(0x38, this, System.String, [System.Dictionary, System.String, System.String])
+            StaticMonsters := new System.Dictionary(0x48, this, System.String, [System.Dictionary, System.String, System.Struct.Int32])
             backgroundDef := new CrusadersGame.Defs.BackgroundDef(144, this)
             BackgroundDefID := new System.Int32(204, this)
             isFixed := new System.Boolean(252, this) ;OR-TYPE
@@ -125,7 +134,15 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.Defs.MonsterDef
             Name := new System.String(24, this)
+            availableAttacks := new System.List(0x20, this, CrusadersGame.Defs.MonsterDef.MonsterAttack)
             ;FE
+
+            class MonsterAttack extends System.Object
+            {
+                ;FB-CrusadersGame.Defs.MonsterDef.MonsterAttack
+                AttackDef := new CrusadersGame.Defs.AttackDef(0x10, this)
+                ;FE
+            }
         }
 
         class PatronDef extends UnityGameEngine.Data.DataDef
@@ -340,6 +357,35 @@ class CrusadersGame
             monsterDef := new CrusadersGame.Defs.MonsterDef(856, this)
             active := new System.Boolean(2633, this)
             ;FE
+        }
+
+        class OfflineProgressHandlerV2 extends System.Object
+        {
+            ;FB-CrusadersGame.GameScreen.OfflineProgressHandlerV2
+            CurrentState := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.HandlerState(0x88, this)
+            OfflineMode := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.OfflineProgressMode(0x8C, this)
+            OfflineTimeRequested := new System.Int32(0x90, this)
+            OfflineTimeSimulated := new System.Int32(0x94, this)
+            CurrentStopReason := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.StopReason(0xA0, this)
+            ;FE
+
+            class HandlerState extends System.Enum
+            {
+                Type := "System.Int32"
+                Enum := {0:"Inactive", 1:"Active", 2:"Stopping"}
+            }
+
+            class OfflineProgressMode extends System.Enum
+            {
+                Type := "System.Int32"
+                Enum := {0:"OfflineProgress", 1:"BGProgress", -1:"None", 2:"PlaceHolder"}
+            }
+
+            class StopReason extends System.Enum
+            {
+                Type := "System.Int32"
+                Enum := {0:"Cancel", 1:"CancelNoReload", 2:"Exception", 3:"NoAutoProgress", 4:"TooManyDead", 5:"WentBackwards", 6:"TooSlow", 7:"RanFullTime", 8:"Reset"}
+            }
         }
 
         class UIComponents

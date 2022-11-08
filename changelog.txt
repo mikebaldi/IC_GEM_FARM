@@ -1,3 +1,8 @@
+v1.1.0 November 8, 2022
+
+    Created _AreaHandler class that includes functionality of _QTHandler class and will set all monsters to a generic melee monster if possible.
+    Found and fixed a typo that prevented dictionary collection memory objects from being insantiated.
+
 v 1.0.0 October 28, 2022
 
     All done. Not really, but yes.
