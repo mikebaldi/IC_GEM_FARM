@@ -5,26 +5,31 @@ class IdleGameManager_Parent extends System.StaticBase
 
 class IdleGameManager extends GameManager
 {
+    Offset := [0x495A90, 0xCB0]
+    
     ;FB-IdleGameManager
     game := new CrusadersGame.Game(216, this)
     ;FE
     
-    __new()
-    {
-        this.Offset := 0xCB0
-        this.GetAddress := this.variableGetAddress
-        this.ParentObj := new IdleGameManager_Parent
-        return this
-    }
+    ;__new()
+    ;{
+    ;    this.Offset := 0xCB0
+    ;    this.GetAddress := this.variableGetAddress
+    ;    this.ParentObj := new IdleGameManager_Parent
+    ;    return this
+    ;}
 }
 
 ;base class UnityEngine.MonoBehaviour
-class GameManager extends System.Object
+class GameManager extends System.Base
 {
     ;FB-GameManager
     TimeScale := new System.Single(128, this)
     ;FE
 }
+
+class IEffectSource extends System.Object ; actually extends 
+{}
 
 class CrusadersGame
 {
@@ -33,32 +38,39 @@ class CrusadersGame
         ;FB-CrusadersGame.ChampionsGameInstance
         Screen := new CrusadersGame.GameScreen.CrusadersGameScreen(16, this)
         Controller := new CrusadersGame.GameScreen.CrusadersGameController(24, this)
-        ;OfflineHandler := new CrusadersGame.GameScreen.OfflineProgressHandlerV2(0x20, this)
-        ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(32, this)
-        HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(40, this)
-        ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(56, this)
-        StatHandler := new CrusadersGame.User.Instance.UserInstanceStatHandler(64, this)
-        PatronHandler := new CrusadersGame.User.Instance.UserInstancePatronHandler(80, this)
-        FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(96, this)
-        offlineProgressHandler := new OfflineProgressHandler(128, this)
-        ResetsSinceLastManual := new System.Int32(276, this)
-        InstanceMode := new CrusadersGame.ChampionsGameInstance.GameInstanceMode(280, this)
-        instanceLoadTimeSinceLastSave := new System.Int32(284, this)
-        ClickLevel := new System.Int32(296, this)
-        state := new CrusadersGame.ChampionsGameInstance.InstanceState(312, this)
+        ActiveCampaignData := new CrusadersGame.GameScreen.ActiveCampaignData(40, this)
+        HeroHandler := new CrusadersGame.User.Instance.UserInstanceHeroHandler(48, this)
+        ResetHandler := new CrusadersGame.User.Instance.UserInstanceResetHandler(64, this)
+        StatHandler := new CrusadersGame.User.Instance.UserInstanceStatHandler(72, this)
+        PatronHandler := new CrusadersGame.User.Instance.UserInstancePatronHandler(88, this)
+        FormationSaveHandler := new CrusadersGame.User.UserInstanceFormationSaveHandler(104, this)
+        ResetsSinceLastManual := new System.Int32(244, this)
+        InstanceMode := new CrusadersGame.ChampionsGameInstance.GameInstanceMode(248, this)
+        instanceLoadTimeSinceLastSave := new System.Int32(252, this)
+        ClickLevel := new System.Int32(264, this)
+        state := new CrusadersGame.ChampionsGameInstance.InstanceState(280, this)
+        timeScales := new System.List(216, this, CrusadersGame.ChampionsGameInstance.TimeScaleData)
         ;FE
+
+        class TimeScaleData extends System.Object ; we should technically extend CrusadersGame.ChampionsGameInstance.TimeScale, but there is nothing in there we want in TimeScale for now
+        {
+        ;FB-CrusadersGame.ChampionsGameInstance+TimeScaleData
+        Multipliers := new System.Dictionary(16, this, CrusadersGame.Effects.IEffectSource, System.Single)
+        ;FE
+        }
 
         class GameInstanceMode extends System.Enum
         {
             Type := "System.Int32"
-            ;Enum := {0:"Foreground", 1:"OfflineProgress", 2:"BackgroundProgress"}
-            Enum := {0:"Foreground", 1:"CatchUp", 2:"OfflineProgress", 3:"BackgroundProgress"} ; pre v476
+            Enum := {0:"Foreground", 1:"OfflineProgress", 2:"BackgroundProgress"}
+            ;Enum := {0:"Foreground", 1:"CatchUp", 2:"OfflineProgress", 3:"BackgroundProgress"} ; pre v476
         }
 
         class InstanceState extends System.Enum
         {
             Type := "System.Int32"
-            Enum := {0:"Running", 1:"Loading", 2:"WaitingForBGProgressStart", 3:"WaitingAfterBGProgress", 4:"None", 5:"Cleared", 6:"WorldMap"}
+            Enum := {0:"WaitingForBackgroundProgressToStart", 1:"Running", 2:"Loading", 3:"None", 4:"Cleared", 5:"WorldMap"}
+            ;Enum := {0:"Running", 1:"Loading", 2:"WaitingForBGProgressStart", 3:"WaitingAfterBGProgress", 4:"None", 5:"Cleared", 6:"WorldMap"}
         }
     }
 
@@ -68,14 +80,14 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.Defs.AdventureDef
             areas := new System.List(168, this, CrusadersGame.Defs.AreaDef)
+            Repeatable := new System.Int32(204, this)
             ;FE
         }
 
         class AttackDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.AttackDef
-            ID := new System.Int32(0x10, this)
-            Name := new System.String(0x18, this)
+            Name := new System.String(24, this)
             CooldownTimer := new System.Single(176, this)
             ;FE
         }
@@ -83,11 +95,11 @@ class CrusadersGame
         class AreaDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.AreaDef
-            Monsters := new System.List(0x20, this, System.Int32)
-            Bosses := new System.List(0x28, this, [System.List, System.Int32])
-            MonsterSpawners := new System.Dictionary(0x30, this, System.String, [System.Dictionary, System.String, System.String])
-            MonsterGenerators := new System.Dictionary(0x38, this, System.String, [System.Dictionary, System.String, System.String])
-            StaticMonsters := new System.Dictionary(0x48, this, System.String, [System.Dictionary, System.String, System.Struct.Int32])
+            Monsters := new System.List(32, this, System.Int32)
+            Bosses := new System.List(40, this, [System.List, System.Int32])
+            MonsterSpawners := new System.Dictionary(48, this, System.String, [System.Dictionary, System.String, System.Object])
+            MonsterGenerators := new System.Dictionary(56, this, System.String, [System.Dictionary, System.String, System.Object])
+            StaticMonsters := new System.Dictionary(72, this, System.String, [System.Dictionary, System.String, System.Object])
             backgroundDef := new CrusadersGame.Defs.BackgroundDef(144, this)
             BackgroundDefID := new System.Int32(204, this)
             isFixed := new System.Boolean(252, this) ;OR-TYPE
@@ -107,6 +119,13 @@ class CrusadersGame
             ;FE
         }
 
+        class BuffDef extends UnityGameEngine.Data.DataDef
+        {
+            ;FB-CrusadersGame.Defs.BuffDef
+            Name := new System.String(32, this)
+            ;FE
+        }
+
         class EffectDef extends UnityGameEngine.Data.DataDef
         {
             ;inherits id
@@ -115,9 +134,22 @@ class CrusadersGame
         class HeroDef extends UnityGameEngine.Data.DataDef
         {
             ;FB-CrusadersGame.Defs.HeroDef
-            name := new System.String(48, this)
-            SeatID := new System.Int32(448, this)
+            characterDetails := new CrusadersGame.Defs.HeroDef.CharacterSheetDetails(24, this)
+            name := new System.String(56, this)
+            SeatID := new System.Int32(456, this)
             ;FE
+
+            class CharacterSheetDetails extends System.Object
+            {
+                ;FB-CrusadersGame.Defs.HeroDef+CharacterSheetDetails
+                strs := new System.List(80, this, System.Int32)
+                ints := new System.List(88, this, System.Int32)
+                dexs := new System.List(96, this, System.Int32)
+                chas := new System.List(104, this, System.Int32)
+                cons := new System.List(112, this, System.Int32)
+                wiss := new System.List(120, this, System.Int32)
+                ;FE
+            }
         }
 
         class FormationSaveV2Def extends UnityGameEngine.Data.DataDef
@@ -134,13 +166,13 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.Defs.MonsterDef
             Name := new System.String(24, this)
-            availableAttacks := new System.List(0x20, this, CrusadersGame.Defs.MonsterDef.MonsterAttack)
+            availableAttacks := new System.List(32, this, CrusadersGame.Defs.MonsterDef.MonsterAttack)
             ;FE
 
             class MonsterAttack extends System.Object
             {
-                ;FB-CrusadersGame.Defs.MonsterDef.MonsterAttack
-                AttackDef := new CrusadersGame.Defs.AttackDef(0x10, this)
+                ;FB-CrusadersGame.Defs.MonsterDef+MonsterAttack
+                AttackDef := new CrusadersGame.Defs.AttackDef(16, this)
                 ;FE
             }
         }
@@ -205,7 +237,7 @@ class CrusadersGame
 
         class EffectKeyHandler extends System.Object
         {
-            ;FB-CrusadersGame.Effects.EffectKeyHandler
+            ;FB-CrusadersGame.Effects.EffectKeyHandlerBuffDef
             parent := new CrusadersGame.Effects.Effect(16, this)
             effectKeyParams := new CrusadersGame.Effects.EffectKeyParams(24, this)
             activeEffectHandlers := new System.List(304, this, CrusadersGame.Effects.ActiveEffectKeyHandler)
@@ -226,6 +258,13 @@ class CrusadersGame
             ;FB-CrusadersGame.Effects.EffectStacks
             stackCount := new System.Double(152, this)
             ;FE
+        }
+
+        class IEffectSource extends System.Interface
+        {
+            ;Hero := new CrusadersGame.GameScreen.Hero(this.iOffset, this.iParentObj)
+            ;BuffDef := new CrusadersGame.Defs.BuffDef(this.iOffset, this.iParentObj)
+
         }
     }
 
@@ -249,7 +288,7 @@ class CrusadersGame
             currentArea := new CrusadersGame.GameScreen.AreaLevel(40, this)
             currentAreaID := new System.Int32(136, this)
             highestAvailableAreaID := new System.Int32(144, this)
-            gold := new Engine.Numeric.Quad(600, this)
+            gold := new Engine.Numeric.Quad(592, this)
             ;FE
             goldQuad := new System.Quad(600, this)
         }
@@ -258,7 +297,7 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.GameScreen.Area
             activeMonsters := new System.List(72, this, CrusadersGame.GameScreen.Monster)
-            Active := new System.Boolean(488, this)
+            Active := new System.Boolean(484, this)
             secondsSinceStarted := new System.Single(524, this)
             basicMonstersSpawnedThisArea := new System.Int32(584, this)
             ;FE
@@ -292,7 +331,7 @@ class CrusadersGame
             area := new CrusadersGame.GameScreen.Area(24, this)
             formation := new CrusadersGame.GameScreen.Formation(40, this)
             areaTransitioner := new CrusadersGame.GameScreen.AreaTransitioner(64, this)
-            userData := new CrusadersGame.User.UserData(176, this)
+            userData := new CrusadersGame.User.UserData(184, this)
             ;FE
         }
 
@@ -306,12 +345,12 @@ class CrusadersGame
         class Formation extends System.Object
         {
             ;FB-CrusadersGame.GameScreen.Formation
-            slots := new System.List(32, this, CrusadersGame.GameScreen.FormationSlot)
-            transitionOverrides := new System.Dictionary(176, this, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, [System.ListSystem.Action<System.Action])
-            transitionDir := new CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection(412, this)
-            inAreaTransition := new System.Boolean(416, this)
-            numAttackingMonstersReached := new System.Int32(424, this)
-            numRangedAttackingMonsters := new System.Int32(428, this)
+            slots := new System.List(40, this, CrusadersGame.GameScreen.FormationSlot)
+            transitionOverrides := new System.Dictionary(184, this, CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection, [System.List, System.Action])
+            transitionDir := new CrusadersGame.GameScreen.Formations.FormationSlotRunHandler.TransitionDirection(420, this)
+            inAreaTransition := new System.Boolean(424, this)
+            numAttackingMonstersReached := new System.Int32(432, this)
+            numRangedAttackingMonsters := new System.Int32(436, this)
             ;FE
         }
 
@@ -340,14 +379,14 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.GameScreen.Hero
             def := new CrusadersGame.Defs.HeroDef(24, this)
-            effects := new CrusadersGame.Effects.EffectKeyCollection(144, this)
-            allUpgradesOrdered := new System.Dictionary(704, this, CrusadersGame.ChampionsGameInstance, [System.List, CrusadersGame.Defs.UpgradeDef])
-            effectsByUpgradeId := new System.Dictionary(736, this, System.Int32, [System.List, CrusadersGame.Effects.Effect])
-            Owned := new System.Boolean(776, this)
-            slotID := new System.Int32(780, this)
-            Benched := new System.Boolean(792, this)
-            Level := new System.Int32(820, this)
-            health := new System.Double(856, this)
+            effects := new CrusadersGame.Effects.EffectKeyCollection(168, this)
+            allUpgradesOrdered := new System.Dictionary(736, this, CrusadersGame.ChampionsGameInstance, [System.List, CrusadersGame.Defs.UpgradeDef])
+            effectsByUpgradeId := new System.Dictionary(768, this, System.Int32, [System.List, CrusadersGame.Effects.Effect])
+            Owned := new System.Boolean(808, this)
+            slotID := new System.Int32(812, this)
+            Benched := new System.Boolean(824, this)
+            Level := new System.Int32(852, this)
+            health := new System.Double(888, this)
             ;FE
         }
 
@@ -355,18 +394,18 @@ class CrusadersGame
         {
             ;FB-CrusadersGame.GameScreen.Monster
             monsterDef := new CrusadersGame.Defs.MonsterDef(856, this)
-            active := new System.Boolean(2633, this)
+            active := new System.Boolean(2649, this)
             ;FE
         }
 
         class OfflineProgressHandlerV2 extends System.Object
         {
             ;FB-CrusadersGame.GameScreen.OfflineProgressHandlerV2
-            CurrentState := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.HandlerState(0x88, this)
-            OfflineMode := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.OfflineProgressMode(0x8C, this)
-            OfflineTimeRequested := new System.Int32(0x90, this)
-            OfflineTimeSimulated := new System.Int32(0x94, this)
-            CurrentStopReason := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.StopReason(0xA0, this)
+            CurrentState := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.HandlerState(192, this)
+            OfflineMode := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.OfflineProgressMode(200, this)
+            OfflineTimeRequested := new System.Int32(204, this)
+            OfflineTimeSimulated := new System.Int32(208, this)
+            CurrentStopReason := new CrusadersGame.GameScreen.OfflineProgressHandlerV2.StopReason(220, this)
             ;FE
 
             class HandlerState extends System.Enum
@@ -492,11 +531,14 @@ class CrusadersGame
             class UserInstanceStatHandler extends CrusadersGame.User.Instance.UserInstanceDataHandler
             {
                 ;FB-CrusadersGame.User.Instance.UserInstanceStatHandler
-                ActiveNerd0 := new System.Int32(592, this)
-                ActiveNerd1 := new System.Int32(596, this)
-                ActiveNerd2 := new System.Int32(600, this)
-                DSpec1HeroId := new System.Int32(628, this)
-                DSpec1SlotId := new System.Int32(632, this)
+                ActiveNerd0 := new System.Int32(600, this)
+                ActiveNerd1 := new System.Int32(604, this)
+                ActiveNerd2 := new System.Int32(608, this)
+                DSpec1HeroId := new System.Int32(636, this)
+                DSpec1SlotId := new System.Int32(640, this)
+                GoldGained := new Engine.Numeric.Quad(208, this)
+                ThisResetDamageDealt := new Engine.Numeric.Quad(304, this)
+                ThisResetHighestDamageDealt := new Engine.Numeric.Quad(320, this)
                 ;FE
             }
         }
@@ -515,10 +557,10 @@ class CrusadersGame
             ChestHandler := new CrusadersGame.User.UserChestHandler(32, this)
             StatHandler := new CrusadersGame.User.UserStatHandler(48, this)
             ModronHandler := new CrusadersGame.User.UserModronHandler(216, this)
-            redRubies := new System.Int32(588, this)
-            redRubiesSpent := new System.Int32(592, this)
-            inited := new System.Boolean(616, this)
-            ActiveUserGameInstance := new System.Int32(636, this)
+            redRubies := new System.Int32(604, this)
+            redRubiesSpent := new System.Int32(608, this)
+            inited := new System.Boolean(632, this)
+            ActiveUserGameInstance := new System.Int32(652, this)
             ;FE
         }
 
@@ -572,29 +614,6 @@ class CrusadersGame
     }
 }
 
-class OfflineProgressHandler extends System.Object
-{
-    ;offlineProgress := new offlineProgressHandler.OfflineProgressionDetails(0x14, 0, this)
-    ;FB-OfflineProgressHandler
-    modronSave := new CrusadersGame.User.UserModronHandler.ModronCoreData(64, this)
-    monstersSpawnedThisArea := new System.Int32(216, this)
-    inGameNumSecondsToProcess := new System.Int32(236, this)
-    finishedOfflineProgressType := new OfflineProgressHandler.OfflineCompleteType(324, this)
-    ;FE
-
-    class OfflineCompleteType extends System.Enum
-    {
-        Type := "System.Int32"
-        Enum := {0:"Canceled", 1:"FinishedFullTime", 2:"FinishedPartialTimeWithReset"}
-    }
-
-    ;class OfflineProgressionDetails extends System.Object
-    ;{
-        ;NOTUSED-OfflineProgressHandler+OfflineProgressionDetails
-
-    ;}
-}
-
 class UnityGameEngine
 {
     class Data
@@ -612,7 +631,7 @@ class UnityGameEngine
         class DrawableButton extends UnityGameEngine.Display.Drawable
         {
             ;FB-UnityGameEngine.Display.DrawableButton
-            toggled := new System.Boolean(954, this)
+            toggled := new System.Boolean(970, this)
             ;FE
         }
 
@@ -677,4 +696,3 @@ class UnityGameEngine
         }
     }
 }
-;Processing Time (minutes): 

@@ -10,12 +10,8 @@ class _AreaHandler
         this.SetMonsterDefID(this.Areas.Item[area - 1])
         this.BuildList()
         this.SetAreas()
-        ;get monster list, is id
-            ;scrap that method, use active monsters list instead of that hash set
-            ;get monster attack as they spawn -> controller.area.standardmonsterspawner.spawnedMmonsters(hashet item 0).monsterdef.id for id then continue to .availableattacks.item0.id
-            ;compare to attack id == 21
-            ;if so use that monster
-            ;if can't find that then set this.monsterdefid := first entry into monster list by id
+        ;should let briv skip bosses
+        this.ActiveCampaignData.ActiveCampaignData.currentObjective.Repeatable.Value := 1
         return this
     }
 

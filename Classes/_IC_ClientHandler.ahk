@@ -33,7 +33,7 @@ class _IC_ClientHandler extends _ClientHandler2
         }
         startTime := A_TickCount
         elapsedTime := 0
-        while ((this.GameInstance.state.Value != 0 OR this.GameInstance.InstanceMode.Value != 0) AND elapsedTime < 60000)
+        while ((this.GameInstance.state.Value != 1 OR this.GameInstance.InstanceMode.Value != 0) AND elapsedTime < 60000)
         {
             if !(this.DoesWinExist())
             {

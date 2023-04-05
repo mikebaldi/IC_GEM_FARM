@@ -4,8 +4,8 @@ class BrivSteelbonesHandler extends ActiveEffectKeyHandler
     UpgradeID := 3450
     EffectID := 567
     ;FB-CrusadersGame.Effects.BrivSteelbonesHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    steelbonesStacks := new CrusadersGame.Effects.EffectStacks(56, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(64, this)
+    steelbonesStacks := new CrusadersGame.Effects.EffectStacks(72, this)
     ;FE
 }
 
@@ -15,10 +15,10 @@ class BrivUnnaturalHasteHandler extends ActiveEffectKeyHandler
     UpgradeID := 3452
     EffectID := 569
     ;FB-CrusadersGame.Effects.BrivUnnaturalHasteHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    sprintStacks := new CrusadersGame.Effects.EffectStacks(56, this)
-    areaSkipChance := new System.Single(104, this)
-    areaSkipAmount := new System.Int32(108, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(64, this)
+    sprintStacks := new CrusadersGame.Effects.EffectStacks(72, this)
+    areaSkipChance := new System.Single(120, this)
+    areaSkipAmount := new System.Int32(124, this)
     ;FE
 }
 
@@ -29,49 +29,11 @@ class HewMaanTeamworkHandler extends ActiveEffectKeyHandler
     UpgradeID := 4829
     EffectID := 763
     ;FB-CrusadersGame.Effects.HewMaanTeamworkHandler
-    teamworkEffectKey := new CrusadersGame.Effects.EffectKey(0x30, this)
-    carefullyBalancedEffectKey := new CrusadersGame.Effects.EffectKey(0x98, this)
+    teamworkEffectKey := new CrusadersGame.Effects.EffectKey(64, this)
+    carefullyBalancedEffectKey := new CrusadersGame.Effects.EffectKey(168, this)
     ;FE
 
     effectKey := this.teamworkEffectKey
-}
-
-class OminContractualObligationsHandler extends ActiveEffectKeyHandler
-{
-    ChampID := 65
-    UpgradeID := 4110
-    EffectID := 649
-    ;FB-CrusadersGame.Effects.OminContractualObligationsHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    buffTimer := new UnityGameEngine.Utilities.SimpleTimer(0x78, this)
-    obligationsRequired := new System.Int32(0x8C, this)
-    obligationsFufilled := new System.Int32(0x90, this)
-    isGoldBuffApplied := new System.Boolean(0x98, this)
-    ;FE
-}
-
-class NerdWagonHandler extends ActiveEffectKeyHandler
-{
-    ChampID := 87
-    UpgradeID := 6152
-    EffectID := 921
-    ;FB-CrusadersGame.Effects.NerdWagonHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    nerd0 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(72, this)
-    nerd1 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(80, this)
-    nerd2 := new CrusadersGame.Effects.NerdWagonHandler.Nerd(88, this)
-    ;FE
-
-    class Nerd extends System.Object
-    {
-        type := new NerdWagonHandler.NerdType(0x20, this)
-    }
-
-    class NerdType extends System.Enum
-    {
-        Type := "System.Int32"
-        Enum := {0:"None", 1:"Fighter_Orange", 2:"Ranger_Red", 3:"Bard_Green", 4:"Cleric_Yellow", 5:"Rogue_Pink", 6:"Wizard_Purple"}
-    }
 }
 
 class SentryEchoHandler extends ActiveEffectKeyHandler
@@ -80,9 +42,9 @@ class SentryEchoHandler extends ActiveEffectKeyHandler
     UpgradeID := 3140
     EffectID := 488
     ;FB-CrusadersGame.Effects.SentryEchoHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(96, this)
-    baseResolutionAmount := new System.Double(192, this)
-    baseResolutionChance := new System.Double(200, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(112, this)
+    baseResolutionAmount := new System.Double(208, this)
+    baseResolutionChance := new System.Double(216, this)
     ;FE
 }
 
@@ -92,9 +54,9 @@ class TimeScaleWhenNotAttackedHandler extends ActiveEffectKeyHandler
     UpgradeID := 2774
     EffectID := 432
     ;FB-TimeScaleWhenNotAttackedHandler
-    effectKey := new CrusadersGame.Effects.EffectKey(48, this)
-    scaleActive := new System.Boolean(272, this)
-    effectTime := new System.Double(280, this)
+    effectKey := new CrusadersGame.Effects.EffectKey(64, this)
+    scaleActive := new System.Boolean(288, this)
+    effectTime := new System.Double(296, this)
     ;FE
 }
 
@@ -106,6 +68,12 @@ class ActiveEffectKeyHandler extends System.Object
         this.GetAddress := this.variableGetAddress
         this.CachedAddress := ""
         heroes := _MemoryHandler.CreateOrGetHeroes()
+        if !heroes
+        {
+            gameManager := new IdleGameManager
+            gameInstance := gameManager.game.gameInstances.Item[0]
+            heroes := gameManager.game.gameInstances.Item[0].HeroHandler.parent.heroes
+        }
         this.Hero := heroes.Item[this.ChampID - 1]
         this.effectKeysByKeyName := this.Hero.effects.effectKeysByKeyName
         this.effectKeysByKeyNameIndex := -1

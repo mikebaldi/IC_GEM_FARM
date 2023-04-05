@@ -24,7 +24,7 @@ global g_TV
 
 System.Refresh()
 GuiControl, -Redraw, TreeViewID
-objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new BrivSteelbonesHandler, new TimeScaleWhenNotAttackedhandler, new OminContractualObligationsHandler, new NerdWagonHandler, new SentryEchoHandler, new HewMaanTeamworkHandler ]
+objArray := [ new IdleGameManager, new BrivUnnaturalHasteHandler, new BrivSteelbonesHandler, new TimeScaleWhenNotAttackedhandler, new SentryEchoHandler, new HewMaanTeamworkHandler ]
 g_TV := new TV_MemoryView(objArray*)
 TV_Modify(0, "Sort") 
 GuiControl, +Redraw, TreeViewID

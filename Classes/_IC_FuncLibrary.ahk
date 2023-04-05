@@ -88,33 +88,6 @@ class _IC_FuncLibrary extends _Contained
         return this.ModronSaveObj.targetArea.Value
     }
 
-    GetModronTargetAreaOLD()
-    {
-        ;g_Log.CreateEvent(A_ThisFunc)
-        offlineHandlerTA := -1
-        userDataTA := -1
-        offlineHandlerTA := this.GameInstance.offlineProgressHandler.modronSave.targetArea.Value
-        ;if (!offlineHandlerTA)
-            ;g_Log.AddDataSimple("offlineHandlerTA read failed")
-        modronHandler := this.GameInstance.Controller.userData.ModronHandler
-        ;modronHandler.UseCachedAddress(true)
-        _size := modronHandler.modronSaves._size.Value
-        index := 0
-        loop, %_size%
-        {
-            item := modronHandler.modronSaves.Item[index]
-            if (item.InstanceID.Value == 1)
-                userDataTA := item.targetArea.Value
-            index++
-        }
-        ;if (!userDataTA)
-            ;g_Log.AddDataSimple("userDataTA read failed")
-        ;if (offlineHandlerTA != userDataTA)
-            ;g_Log.AddDataSimple("userDataTA: " . userDataTA . ", offlineHandlerTA: " . offlineHandlerTA)
-        ;g_Log.EndEvent()
-        return offlineHandlerTA
-    }
-
     IsCurrentFormation(formation)
     {
         ;g_Log.CreateEvent(A_ThisFunc)

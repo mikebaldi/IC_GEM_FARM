@@ -597,6 +597,35 @@ class System
             return address
         }
     }
+
+    class Interface extends System.Object
+    {
+        __new(offset, parentObj)
+        {
+            this.Offset := offset
+            this.GetAddress := this.variableGetAddress
+            this.ParentObj := parentObj
+            this.CachedAddress := ""
+            this.ConsecutiveReads := 0
+            this.Hero := new CrusadersGame.GameScreen.Hero(this.Offset, this.ParentObj)
+            this.BuffDef := new CrusadersGame.Defs.BuffDef(this.Offset, this.ParentObj)
+            return this
+        }
+    }
+
+    class Base
+    {
+        GetAddress()
+        {
+            count := this.Offset.Count()
+            address := System.ModuleBaseAddress
+            loop, % count
+            {
+                address := System.Memory.read(address + this.Offset[A_Index], System.Memory.ptrType)
+            }
+            return address
+        }
+    }
 }
 
 class Engine

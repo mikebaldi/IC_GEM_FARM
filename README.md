@@ -1,3 +1,13 @@
+# Idle Champions - Gem Farm Script V2
+
+A branch to work on V2 to include the following:
+
+1. Add option to not restart stack but instead restart every 30 minutes to buy and open chests and to clear the memory leaks.
+2. Clean up collection memory objects. This will also require clean up of offset updater.
+3. Eliminate Memory Handler class. This class was meant to handle references of memory objects, so as to avoid multiple instances. That functionality was built into the memory objects.
+4. Add some docs/comments.
+5. Eliminate settings files. This is an advanced script, users can just edit the run files.
+
 # Idle Champions - Gem Farm Script
 
 A barebones gem farm script. Does not include a GUI or any sort of stats.
